@@ -1,7 +1,10 @@
 package com.vti.group1.shopapi.config;
 
+import static org.springframework.security.config.Customizer.withDefaults;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,15 +24,25 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/v1/auth/**")
-                .permitAll()
-                .anyRequest()
-                .authenticated()
+        // http.csrf().disable()
+        // .authorizeHttpRequests()
+        // .requestMatchers(HttpMethod.GET, "/**").permitAll()
+        // .requestMatchers("/api/v1/auth/**")
+        // .permitAll()
+        // .anyRequest()
+        // .authenticated()
+        // .and()
+        // .sessionManagement(management -> management
+        // .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        // .authenticationProvider(authenticationProvider)
+        // .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+
+        http.authorizeHttpRequests()
+                .requestMatchers(HttpMethod.GET, "/**").permitAll()
+                .anyRequest().authenticated()
                 .and()
-                .sessionManagement(management -> management
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .csrf(withDefaults())
+                .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
