@@ -1,2 +1,9 @@
-package com.vti.group1.shopapi.entity;public class Color {
+package com.vti.group1.shopapi.entity;
+
+public enum Color {
+    RED,
+    BLUE,
+    GREEN,
+    BLACK,
+    WHITE
 }
