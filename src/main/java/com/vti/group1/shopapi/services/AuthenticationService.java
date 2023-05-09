@@ -95,6 +95,8 @@ public class AuthenticationService {
                         return LogoutResponse.builder().message("User is not logged in").build();
                 }
 
+                logger.info("User logging out");
+
                 blacklistTokenService.addTokenToBlacklist(token);
 
                 logger.info("User logged out successfully");
