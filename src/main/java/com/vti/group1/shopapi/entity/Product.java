@@ -24,5 +24,5 @@ public class Product {
     private Size size;
     @Enumerated(EnumType.STRING)
     private Color color;
-    private List<String> images;
+    private String images;
 }

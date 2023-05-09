@@ -25,7 +25,7 @@ public class ProductController {
         }
         return ResponseEntity.ok(products);
     }
-    @GetMapping("/:id")
+    @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(
             @PathVariable Long id
     ) {
@@ -35,9 +35,4 @@ public class ProductController {
         }
         return ResponseEntity.notFound().build();
     }
-    @GetMapping("/vv")
-    public String hello() {
-        return "VTI Shop API";
-    }
-
 }
