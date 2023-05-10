@@ -9,4 +9,6 @@ import com.vti.group1.shopapi.entity.User;
 public interface UserRepository extends JpaRepository<User, String> {
 
     Optional<User> findByEmail(String email);
+
+    boolean existsByEmail(String email);
 }
