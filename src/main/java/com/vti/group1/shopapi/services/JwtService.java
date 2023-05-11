@@ -24,6 +24,15 @@ public class JwtService {
         return claimsResolver.apply(claims);
     }
 
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(JwtUtil.SECRET_KEY)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
     public String generateToken(UserDetails userDetails) {
         return generateToken(Map.of(), userDetails);
     }
@@ -52,14 +61,5 @@ public class JwtService {
 
     private Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(JwtUtil.SECRET_KEY)
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
     }
 }
