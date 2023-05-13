@@ -1,4 +1,4 @@
-package com.vti.group1.shopapi.auth;
+package com.vti.group1.shopapi.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,10 +9,8 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegisterRequest {
+public class LoginRequest {
 
-    private String firstName;
-    private String lastName;
     private String email;
     private String password;
 }

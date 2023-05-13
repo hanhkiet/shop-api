@@ -1,15 +1,19 @@
 package com.vti.group1.shopapi.controller;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vti.group1.shopapi.auth.AuthenticationRequest;
-import com.vti.group1.shopapi.auth.AuthenticationResponse;
-import com.vti.group1.shopapi.auth.LogoutResponse;
-import com.vti.group1.shopapi.auth.RegisterRequest;
+import com.vti.group1.shopapi.model.AuthenticationResponse;
+import com.vti.group1.shopapi.model.JwtResponse;
+import com.vti.group1.shopapi.model.LoginRequest;
+import com.vti.group1.shopapi.model.LogoutResponse;
+import com.vti.group1.shopapi.model.RegisterRequest;
 import com.vti.group1.shopapi.services.AuthenticationService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -25,19 +29,29 @@ public class AuthenticationController {
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
             @RequestBody RegisterRequest request) {
-        return ResponseEntity
-                .ok(authenticationService.register(request));
+        AuthenticationResponse response = authenticationService.register(request);
+        return ResponseEntity.ok(response);
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request) {
+    @GetMapping("/validate")
+    public ResponseEntity<JwtResponse> validate(HttpServletRequest request) {
+        String token = authenticationService.validate(request);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE, "token=" + token + "; HttpOnly; SameSite=None; Secure");
+        JwtResponse response = JwtResponse.builder().build();
+        return new ResponseEntity<>(response, headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthenticationResponse> login(
+            @RequestBody LoginRequest request) {
         return ResponseEntity
-                .ok(authenticationService.authenticate(request));
+                .ok(authenticationService.login(request));
     }
 
     @PostMapping("/logout")
     public ResponseEntity<LogoutResponse> logout(HttpServletRequest request) {
-        return ResponseEntity.ok(authenticationService.logout(request));
+        LogoutResponse response = authenticationService.logout(request);
+        return ResponseEntity.ok(response);
     }
 }

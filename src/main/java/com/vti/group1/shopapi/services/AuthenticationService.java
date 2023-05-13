@@ -8,12 +8,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import com.vti.group1.shopapi.auth.AuthenticationRequest;
-import com.vti.group1.shopapi.auth.AuthenticationResponse;
-import com.vti.group1.shopapi.auth.LogoutResponse;
-import com.vti.group1.shopapi.auth.RegisterRequest;
 import com.vti.group1.shopapi.entity.Role;
 import com.vti.group1.shopapi.entity.User;
+import com.vti.group1.shopapi.model.AuthenticationResponse;
+import com.vti.group1.shopapi.model.LoginRequest;
+import com.vti.group1.shopapi.model.LogoutResponse;
+import com.vti.group1.shopapi.model.RegisterRequest;
 import com.vti.group1.shopapi.repository.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,15 +33,19 @@ public class AuthenticationService {
 
     public AuthenticationResponse register(RegisterRequest request) {
 
-        final User user = createUserFromRequestData(request);
-
-        if (userRepository.existsByEmail(request.getEmail()))
+        if (isEmailExisted(request.getEmail()))
             return createResponseForExistedEmailRequest(request);
 
-        return createResponseForRegisterRequest(user);
+        return createResponseForRegisterRequest(request);
     }
 
-    private AuthenticationResponse createResponseForRegisterRequest(User user) {
+    private boolean isEmailExisted(String email) {
+        return userRepository.existsByEmail(email);
+    }
+
+    private AuthenticationResponse createResponseForRegisterRequest(RegisterRequest request) {
+
+        User user = createUserFromRequestData(request);
         var newUser = userRepository.save(user);
         var jwtToken = jwtService.generateToken(user);
 
@@ -68,7 +72,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request) {
+    public AuthenticationResponse login(LoginRequest request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -78,31 +82,31 @@ public class AuthenticationService {
             return responseIncorrectDataMessage(request);
         }
 
-        var user = userRepository.findByEmail(request.getEmail());
-        if (user.isEmpty())
+        if (!isEmailExisted(request.getEmail()))
             return responseMessageForNotRegisteredEmail(request);
 
-        return responseSuccessMessageWithToken(user.get());
+        return responseSuccessMessageWithToken(request);
     }
 
-    private AuthenticationResponse responseIncorrectDataMessage(AuthenticationRequest request) {
+    private AuthenticationResponse responseIncorrectDataMessage(LoginRequest request) {
         String info = String.format("%s is not authenticated", request.getEmail());
         logger.info(info);
 
         return AuthenticationResponse.builder().message("Email or password is incorrect").build();
     }
 
-    private AuthenticationResponse responseMessageForNotRegisteredEmail(AuthenticationRequest request) {
+    private AuthenticationResponse responseMessageForNotRegisteredEmail(LoginRequest request) {
         String info = String.format("%s is not registered", request.getEmail());
         logger.info(info);
 
         return AuthenticationResponse.builder().message("Email is not registered").build();
     }
 
-    private AuthenticationResponse responseSuccessMessageWithToken(User user) {
+    private AuthenticationResponse responseSuccessMessageWithToken(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail());
         var jwtToken = jwtService.generateToken(user);
 
-        String info = String.format("%s authenticated successfully", user.getEmail());
+        String info = String.format("%s login successfully", user.getEmail());
         logger.info(info);
 
         return AuthenticationResponse.builder()
@@ -146,5 +150,9 @@ public class AuthenticationService {
         }
 
         return null;
+    }
+
+    public String validate(HttpServletRequest request) {
+        return getTokenFromRequest(request);
     }
 }
