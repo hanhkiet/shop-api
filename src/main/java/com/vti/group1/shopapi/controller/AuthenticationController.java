@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vti.group1.shopapi.model.AuthenticationResponse;
 import com.vti.group1.shopapi.model.JwtResponse;
 import com.vti.group1.shopapi.model.LoginRequest;
+import com.vti.group1.shopapi.model.LoginResponse;
 import com.vti.group1.shopapi.model.LogoutResponse;
 import com.vti.group1.shopapi.model.RegisterRequest;
+import com.vti.group1.shopapi.model.RegisterResponse;
 import com.vti.group1.shopapi.services.AuthenticationService;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -27,10 +29,17 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<RegisterResponse> register(
             @RequestBody RegisterRequest request) {
-        AuthenticationResponse response = authenticationService.register(request);
-        return ResponseEntity.ok(response);
+        RegisterResponse response = authenticationService.register(request);
+        String jwt = response.getJwt();
+
+        Cookie cookie = new Cookie("token", jwt);
+        cookie.setMaxAge(10);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
     }
 
     @GetMapping("/validate")
@@ -43,10 +52,17 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthenticationResponse> login(
+    public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest request) {
-        return ResponseEntity
-                .ok(authenticationService.login(request));
+        LoginResponse response = authenticationService.login(request);
+        String jwt = response.getJwt();
+
+        Cookie cookie = new Cookie("token", jwt);
+        cookie.setMaxAge(10);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
     }
 
     @PostMapping("/logout")

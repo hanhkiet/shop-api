@@ -10,10 +10,15 @@ import org.springframework.util.StringUtils;
 
 import com.vti.group1.shopapi.entity.Role;
 import com.vti.group1.shopapi.entity.User;
-import com.vti.group1.shopapi.model.AuthenticationResponse;
+import com.vti.group1.shopapi.exception.EmailAlreadyExistException;
+import com.vti.group1.shopapi.exception.InvalidCredentialException;
+import com.vti.group1.shopapi.exception.UserNotLoggedInException;
 import com.vti.group1.shopapi.model.LoginRequest;
+import com.vti.group1.shopapi.model.LoginResponse;
 import com.vti.group1.shopapi.model.LogoutResponse;
 import com.vti.group1.shopapi.model.RegisterRequest;
+import com.vti.group1.shopapi.model.RegisterResponse;
+import com.vti.group1.shopapi.model.UserData;
 import com.vti.group1.shopapi.repository.UserRepository;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,34 +36,39 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
 
-        if (isEmailExisted(request.getEmail()))
-            return createResponseForExistedEmailRequest(request);
+        if (isEmailAlreadyExist(request.getEmail())) {
+            String info = String.format("%s is already registered", request.getEmail());
+            logger.warn(info);
+
+            throw new EmailAlreadyExistException(info);
+        }
 
         return createResponseForRegisterRequest(request);
     }
 
-    private boolean isEmailExisted(String email) {
+    private boolean isEmailAlreadyExist(String email) {
         return userRepository.existsByEmail(email);
     }
 
-    private AuthenticationResponse createResponseForRegisterRequest(RegisterRequest request) {
+    private RegisterResponse createResponseForRegisterRequest(RegisterRequest request) {
 
         User user = createUserFromRequestData(request);
         var newUser = userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
+        String jwt = jwtService.generateToken(newUser);
 
-        return AuthenticationResponse.builder()
-                .message("User registered successfully")
+        UserData userData = UserData.builder()
                 .uuid(newUser.getUuid())
-                .token(jwtToken).build();
-    }
+                .name(newUser.getFirstName() + " " + newUser.getLastName())
+                .email(newUser.getEmail())
+                .build();
 
-    private AuthenticationResponse createResponseForExistedEmailRequest(RegisterRequest request) {
-        String info = String.format("%s is already registered", request.getEmail());
-        logger.info(info);
-        return AuthenticationResponse.builder().message("Email is already registered").build();
+        return RegisterResponse.builder()
+                .message("User registered successfully")
+                .jwt(jwt)
+                .userData(userData)
+                .build();
     }
 
     private User createUserFromRequestData(RegisterRequest request) {
@@ -72,46 +82,40 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse login(LoginRequest request) {
+    public LoginResponse login(LoginRequest request) {
+        String email = request.getEmail();
+        String password = request.getPassword();
+
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            request.getEmail(),
-                            request.getPassword()));
+                            email,
+                            password));
         } catch (Exception e) {
-            return responseIncorrectDataMessage(request);
+            logger.warn("Invalid credentials detected: " + email);
+            throw new InvalidCredentialException("Invalid credentials: " + email);
         }
-
-        if (!isEmailExisted(request.getEmail()))
-            return responseMessageForNotRegisteredEmail(request);
 
         return responseSuccessMessageWithToken(request);
     }
 
-    private AuthenticationResponse responseIncorrectDataMessage(LoginRequest request) {
-        String info = String.format("%s is not authenticated", request.getEmail());
-        logger.info(info);
-
-        return AuthenticationResponse.builder().message("Email or password is incorrect").build();
-    }
-
-    private AuthenticationResponse responseMessageForNotRegisteredEmail(LoginRequest request) {
-        String info = String.format("%s is not registered", request.getEmail());
-        logger.info(info);
-
-        return AuthenticationResponse.builder().message("Email is not registered").build();
-    }
-
-    private AuthenticationResponse responseSuccessMessageWithToken(LoginRequest request) {
+    private LoginResponse responseSuccessMessageWithToken(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail());
-        var jwtToken = jwtService.generateToken(user);
+        String jwt = jwtService.generateToken(user);
+
+        UserData userData = UserData.builder()
+                .uuid(user.getUuid())
+                .name(user.getFirstName() + " " + user.getLastName())
+                .email(user.getEmail())
+                .build();
 
         String info = String.format("%s login successfully", user.getEmail());
         logger.info(info);
 
-        return AuthenticationResponse.builder()
+        return LoginResponse.builder()
                 .message("User authenticated successfully")
-                .token(jwtToken)
+                .jwt(jwt)
+                .userData(userData)
                 .build();
     }
 
@@ -121,19 +125,17 @@ public class AuthenticationService {
 
         if (token == null) {
             logger.warn("Non-token request detected");
-            return LogoutResponse.builder().message("User is not logged in").build();
+            throw new UserNotLoggedInException("User is not logged in");
         }
 
         if (blacklistTokenService.isTokenInBlacklist(token)) {
             logger.warn("Token is already blacklisted");
-            return LogoutResponse.builder().message("User is not logged in").build();
+            throw new UserNotLoggedInException("User is not logged in");
         }
 
-        logger.info("User logging out");
-
         blacklistTokenService.addTokenToBlacklist(token);
-
         logger.info("User logged out successfully");
+
         return LogoutResponse.builder().message("User logged out successfully").build();
     }
 
