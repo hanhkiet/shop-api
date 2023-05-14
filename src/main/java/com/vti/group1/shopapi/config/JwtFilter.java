@@ -4,7 +4,6 @@ import java.io.IOException;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -40,11 +39,14 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         final String jwt = authorizationHeader.substring(7);
+        if (jwtService.isTokenGotBlacklisted(jwt)) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
+        }
+
         final String userEmail = jwtService.extractUserEmail(jwt);
-
-        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            final UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
-
+        if (userEmail != null & SecurityContextHolder.getContext().getAuthentication() == null) {
+            final var userDetails = userDetailsService.loadUserByUsername(userEmail);
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 final var authentication = new UsernamePasswordAuthenticationToken(
                         userDetails,

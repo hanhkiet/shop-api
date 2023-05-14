@@ -6,13 +6,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import com.vti.group1.shopapi.entity.Role;
 import com.vti.group1.shopapi.entity.User;
 import com.vti.group1.shopapi.exception.EmailAlreadyExistException;
 import com.vti.group1.shopapi.exception.InvalidCredentialException;
-import com.vti.group1.shopapi.exception.UserNotLoggedInException;
 import com.vti.group1.shopapi.model.LoginRequest;
 import com.vti.group1.shopapi.model.LoginResponse;
 import com.vti.group1.shopapi.model.LogoutResponse;
@@ -32,7 +30,6 @@ public class AuthenticationService {
 
     private final UserRepository userRepository;
     private final JwtService jwtService;
-    private final BlacklistTokenService blacklistTokenService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
 
@@ -120,41 +117,10 @@ public class AuthenticationService {
     }
 
     public LogoutResponse logout(HttpServletRequest request) {
+        jwtService.clearAuthentication(request);
 
-        String token = getTokenFromRequest(request);
-
-        if (token == null) {
-            logger.warn("Non-token request detected");
-            throw new UserNotLoggedInException("User is not logged in");
-        }
-
-        if (blacklistTokenService.isTokenInBlacklist(token)) {
-            logger.warn("Token is already blacklisted");
-            throw new UserNotLoggedInException("User is not logged in");
-        }
-
-        blacklistTokenService.addTokenToBlacklist(token);
-        logger.info("User logged out successfully");
-
-        return LogoutResponse.builder().message("User logged out successfully").build();
-    }
-
-    private String getTokenFromRequest(HttpServletRequest request) {
-        String bearerToken = request.getHeader("Authorization");
-
-        if (bearerToken == null) {
-            return null;
-        }
-
-        if (StringUtils.hasText("bearerToken")
-                && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
-        }
-
-        return null;
-    }
-
-    public String validate(HttpServletRequest request) {
-        return getTokenFromRequest(request);
+        return LogoutResponse.builder()
+                .message("User logged out successfully")
+                .build();
     }
 }
