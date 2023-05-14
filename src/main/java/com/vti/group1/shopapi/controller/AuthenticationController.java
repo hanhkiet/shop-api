@@ -8,9 +8,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.vti.group1.shopapi.auth.AuthenticationRequest;
 import com.vti.group1.shopapi.auth.AuthenticationResponse;
+import com.vti.group1.shopapi.auth.LogoutResponse;
 import com.vti.group1.shopapi.auth.RegisterRequest;
 import com.vti.group1.shopapi.services.AuthenticationService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -32,5 +34,10 @@ public class AuthenticationController {
             @RequestBody AuthenticationRequest request) {
         return ResponseEntity
                 .ok(authenticationService.authenticate(request));
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<LogoutResponse> logout(HttpServletRequest request) {
+        return ResponseEntity.ok(authenticationService.logout(request));
     }
 }

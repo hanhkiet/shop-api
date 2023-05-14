@@ -4,6 +4,7 @@ import java.util.Arrays;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -26,26 +27,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        // http.csrf().disable()
-        // .authorizeHttpRequests()
-        // .requestMatchers(HttpMethod.GET, "/**").permitAll()
-        // .requestMatchers("/api/v1/auth/**")
-        // .permitAll()
-        // .anyRequest()
-        // .authenticated()
-        // .and()
-        // .sessionManagement(management -> management
-        // .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-        // .authenticationProvider(authenticationProvider)
-        // .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
-
         http
                 .csrf().disable()
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("**").permitAll()
-                .anyRequest().authenticated()
+                .requestMatchers(HttpMethod.POST, "/api/v1/auth/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/**").authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
