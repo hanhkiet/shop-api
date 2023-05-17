@@ -13,9 +13,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "blacklist_tokens")
-public class BlacklistToken {
-
+@Table(name = "invalid_tokens")
+public class InvalidToken {
     @Id
     private String token;
 }

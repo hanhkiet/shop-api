@@ -1,4 +1,4 @@
-package com.vti.group1.shopapi.auth;
+package com.vti.group1.shopapi.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,9 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthenticationResponse {
+public class LoginResponse {
 
-    private String token;
     private String message;
-    private String uuid;
+    private String jwt;
+    private UserData userData;
 }

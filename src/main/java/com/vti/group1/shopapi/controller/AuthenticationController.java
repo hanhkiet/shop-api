@@ -1,17 +1,20 @@
 package com.vti.group1.shopapi.controller;
 
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.vti.group1.shopapi.auth.AuthenticationRequest;
-import com.vti.group1.shopapi.auth.AuthenticationResponse;
-import com.vti.group1.shopapi.auth.LogoutResponse;
-import com.vti.group1.shopapi.auth.RegisterRequest;
+import com.vti.group1.shopapi.model.LoginRequest;
+import com.vti.group1.shopapi.model.LoginResponse;
+import com.vti.group1.shopapi.model.LogoutResponse;
+import com.vti.group1.shopapi.model.RegisterRequest;
+import com.vti.group1.shopapi.model.RegisterResponse;
 import com.vti.group1.shopapi.services.AuthenticationService;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
@@ -23,21 +26,36 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/register")
-    public ResponseEntity<AuthenticationResponse> register(
+    public ResponseEntity<RegisterResponse> register(
             @RequestBody RegisterRequest request) {
-        return ResponseEntity
-                .ok(authenticationService.register(request));
+        RegisterResponse response = authenticationService.register(request);
+        String jwt = response.getJwt();
+
+        Cookie cookie = new Cookie("token", jwt);
+        cookie.setMaxAge(10);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request) {
-        return ResponseEntity
-                .ok(authenticationService.authenticate(request));
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(
+            @RequestBody LoginRequest request) {
+        LoginResponse response = authenticationService.login(request);
+        String jwt = response.getJwt();
+
+        Cookie cookie = new Cookie("token", jwt);
+        cookie.setMaxAge(10);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
     }
 
     @PostMapping("/logout")
     public ResponseEntity<LogoutResponse> logout(HttpServletRequest request) {
-        return ResponseEntity.ok(authenticationService.logout(request));
+        LogoutResponse response = authenticationService.logout(request);
+        return ResponseEntity.ok().body(response);
     }
 }
