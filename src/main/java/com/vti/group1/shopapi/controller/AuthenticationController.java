@@ -39,11 +39,6 @@ public class AuthenticationController {
         return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
     }
 
-    // @GetMapping("/validate")
-    // public ResponseEntity<JwtResponse> validate(HttpServletRequest request) {
-    // JwtResponse response = authenticationService.validate(request);
-    // }
-
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest request) {

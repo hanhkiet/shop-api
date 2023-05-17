@@ -27,6 +27,8 @@ public class OrderAddress {
     @JoinColumn(name = "user_uuid")
     private User user;
 
+    private String recipientName;
+    private String recipientPhone;
     private String street;
     private String district;
     private String city;
