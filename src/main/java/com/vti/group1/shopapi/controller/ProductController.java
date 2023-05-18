@@ -1,6 +1,5 @@
 package com.vti.group1.shopapi.controller;
 
-import com.vti.group1.shopapi.entity.Color;
 import com.vti.group1.shopapi.entity.Product;
 import com.vti.group1.shopapi.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,20 +16,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductController {
     private final ProductRepository productRepository;
+
     @GetMapping({"", "/"})
     public ResponseEntity<List<Product>> getAllProducts() {
         var products = productRepository.findAll();
-        if(products.isEmpty()) {
+        if (products.isEmpty()) {
             return ResponseEntity.notFound().build();
         }
         return ResponseEntity.ok(products);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<Product> getProductById(
             @PathVariable Long id
     ) {
         var product = productRepository.findById(id);
-        if(product.isPresent()) {
+        if (product.isPresent()) {
             return ResponseEntity.ok(product.get());
         }
         return ResponseEntity.notFound().build();
