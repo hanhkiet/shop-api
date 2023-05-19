@@ -57,7 +57,8 @@ public class AuthenticationService {
 
         UserData userData = UserData.builder()
                 .uuid(newUser.getUuid())
-                .name(newUser.getFirstName() + " " + newUser.getLastName())
+                .firstName(newUser.getFirstName())
+                .lastName(newUser.getLastName())
                 .email(newUser.getEmail())
                 .build();
 
@@ -102,7 +103,8 @@ public class AuthenticationService {
 
         UserData userData = UserData.builder()
                 .uuid(user.getUuid())
-                .name(user.getFirstName() + " " + user.getLastName())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .email(user.getEmail())
                 .build();
 
@@ -132,7 +134,8 @@ public class AuthenticationService {
 
         UserData userData = UserData.builder()
                 .uuid(user.getUuid())
-                .name(user.getFirstName() + " " + user.getLastName())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
                 .email(user.getEmail())
                 .build();
 

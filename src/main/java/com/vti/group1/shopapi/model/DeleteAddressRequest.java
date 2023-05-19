@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DeleteAddressRequest {
 
-    private String addressId;
+    private String uuid;
 }

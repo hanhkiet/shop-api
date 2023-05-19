@@ -86,7 +86,7 @@ public class OrderAddressService {
     public void deleteAddress(DeleteAddressRequest orderAddress) {
         logger.info("Delete address");
 
-        String id = orderAddress.getAddressId();
+        String id = orderAddress.getUuid();
 
         if (id == null) {
             logger.error("Address id is null");
@@ -106,7 +106,7 @@ public class OrderAddressService {
     public OrderAddress updateAddress(UpdateAddressRequest orderAddress) {
         logger.info("Update address");
 
-        if (orderAddress.getAddressId() == null) {
+        if (orderAddress.getUuid() == null) {
             logger.error("Address id is null");
             throw new InvalidAddressDataException("Address id is null");
         }
@@ -136,7 +136,7 @@ public class OrderAddressService {
             throw new InvalidAddressDataException("City is null");
         }
 
-        Optional<OrderAddress> address = orderAddressRepository.findById(orderAddress.getAddressId());
+        Optional<OrderAddress> address = orderAddressRepository.findById(orderAddress.getUuid());
 
         if (address.isEmpty()) {
             logger.error("Address not found");
