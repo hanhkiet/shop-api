@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UpdateAddressRequest {
 
-    private String addressId;
+    private String uuid;
     private String recipientName;
     private String recipientPhone;
     private String street;
