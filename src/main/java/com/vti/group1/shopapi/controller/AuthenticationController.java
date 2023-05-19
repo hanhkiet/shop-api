@@ -2,6 +2,7 @@ package com.vti.group1.shopapi.controller;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,5 +58,18 @@ public class AuthenticationController {
     public ResponseEntity<LogoutResponse> logout(HttpServletRequest request) {
         LogoutResponse response = authenticationService.logout(request);
         return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/authenticate")
+    public ResponseEntity<LoginResponse> authenticate(HttpServletRequest request) {
+        LoginResponse response = authenticationService.authenticate(request);
+        String jwt = response.getJwt();
+
+        Cookie cookie = new Cookie("token", jwt);
+        cookie.setMaxAge(10);
+        cookie.setHttpOnly(true);
+        cookie.setSecure(true);
+
+        return ResponseEntity.ok().header(HttpHeaders.SET_COOKIE, cookie.toString()).body(response);
     }
 }

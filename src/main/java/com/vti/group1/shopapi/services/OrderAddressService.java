@@ -33,13 +33,8 @@ public class OrderAddressService {
         return orderAddressRepository.findAll();
     }
 
-    public OrderAddress addAddress(AddAddressRequest request) {
+    public OrderAddress addAddress(String userEmail, AddAddressRequest request) {
         logger.info("Add new address");
-
-        if (request.getUserUuid() == null) {
-            logger.error("User uuid is null");
-            throw new InvalidAddressDataException("User uuid is null");
-        }
 
         if (request.getRecipientName() == null) {
             logger.error("Recipient name is null");
@@ -66,15 +61,15 @@ public class OrderAddressService {
             throw new InvalidAddressDataException("City is null");
         }
 
-        Optional<User> user = userRepository.findById(request.getUserUuid());
+        User user = userRepository.findByEmail(userEmail);
 
-        if (user.isEmpty()) {
+        if (user == null) {
             logger.error("User not found");
             throw new InvalidAddressDataException("User not found");
         }
 
         OrderAddress address = OrderAddress.builder()
-                .user(user.get())
+                .user(user)
                 .recipientName(request.getRecipientName())
                 .recipientPhone(request.getRecipientPhone())
                 .street(request.getStreet())

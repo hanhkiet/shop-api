@@ -123,4 +123,26 @@ public class AuthenticationService {
                 .message("User logged out successfully")
                 .build();
     }
+
+    public LoginResponse authenticate(HttpServletRequest request) {
+        String userEmail = request.getAttribute("userEmail").toString();
+        String jwt = request.getHeader("Authorization").toString().substring(7);
+
+        User user = userRepository.findByEmail(userEmail);
+
+        UserData userData = UserData.builder()
+                .uuid(user.getUuid())
+                .name(user.getFirstName() + " " + user.getLastName())
+                .email(user.getEmail())
+                .build();
+
+        String info = String.format("%s is authenticated successfully", user.getEmail());
+        logger.info(info);
+
+        return LoginResponse.builder()
+                .message("User authenticated successfully")
+                .jwt(jwt)
+                .userData(userData)
+                .build();
+    }
 }
