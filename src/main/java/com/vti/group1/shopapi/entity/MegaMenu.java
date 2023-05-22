@@ -1,5 +1,6 @@
 package com.vti.group1.shopapi.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,14 +14,16 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "menus")
-public class Menu {
+@Table(name = "mega_menus")
+public class MegaMenu {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-  
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "menu_id")
+    private Menu menu;
     private String name;
-
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MegaMenu> megaMenus;
+    @OneToMany(mappedBy = "megaMenu", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MegaMenuItem> megaMenuItems;
 }

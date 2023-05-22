@@ -13,14 +13,15 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "menus")
-public class Menu {
+@Table(name = "items")
+public class Item {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-  
-    private String name;
-
-    @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<MegaMenu> megaMenus;
+    @ManyToOne
+    @JoinColumn(name = "product_uuid")
+    private Product product;
+    private Size size;
+    private Color color;
+    private Integer quantity;
 }
