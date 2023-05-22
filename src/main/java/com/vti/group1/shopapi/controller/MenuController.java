@@ -11,17 +11,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
+
 @RestController
 @RequestMapping("/api/v1/menus")
 @RequiredArgsConstructor
 public class MenuController {
     private final MenuRepository menuRepository;
-    private final MegaMenuRepository megamenuRepository;
+
     @GetMapping()
     public ResponseEntity<List<Menu>> getAllMenus() {
         List<Menu> menus = menuRepository.findAll();
-        return ResponseEntity.ok(menus.isEmpty() ? Collections.emptyList() : menus);
+        return ResponseEntity.ok(menus.isEmpty() ? List.of() : menus);
     }
 }
