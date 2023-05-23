@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 @Table(name = "users")
-public class User implements UserDetails {
+public class Customer implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private String uuid;

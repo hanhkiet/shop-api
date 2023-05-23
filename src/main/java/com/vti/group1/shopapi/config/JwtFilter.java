@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+//    private final UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(
@@ -44,21 +44,21 @@ public class JwtFilter extends OncePerRequestFilter {
             return;
         }
 
-        final String userEmail = jwtService.extractUserEmail(jwt);
-        if (userEmail != null & SecurityContextHolder.getContext().getAuthentication() == null) {
-            final var userDetails = userDetailsService.loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                final var authentication = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities());
-
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                request.setAttribute("userEmail", userEmail);
-            }
-        }
+//        final String userEmail = jwtService.extractUserEmail(jwt);
+//        if (userEmail != null & SecurityContextHolder.getContext().getAuthentication() == null) {
+//            final var userDetails = userDetailsService.loadUserByUsername(userEmail);
+//            if (jwtService.isTokenValid(jwt, userDetails)) {
+//                final var authentication = new UsernamePasswordAuthenticationToken(
+//                        userDetails,
+//                        null,
+//                        userDetails.getAuthorities());
+//
+//                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+//
+//                SecurityContextHolder.getContext().setAuthentication(authentication);
+//                request.setAttribute("userEmail", userEmail);
+//            }
+//        }
 
         filterChain.doFilter(request, response);
     }

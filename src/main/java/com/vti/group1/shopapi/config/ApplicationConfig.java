@@ -1,29 +1,35 @@
 package com.vti.group1.shopapi.config;
 
+import com.vti.group1.shopapi.auth.CustomerAuthenticationProvider;
+import com.vti.group1.shopapi.auth.CustomerDetailsService;
+import com.vti.group1.shopapi.auth.ManagerDetailsService;
+import com.vti.group1.shopapi.repository.CustomerRepository;
+import com.vti.group1.shopapi.repository.ManagerRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
-import com.vti.group1.shopapi.repository.UserRepository;
-import com.vti.group1.shopapi.services.UserDetailsServiceImpl;
-
-import lombok.RequiredArgsConstructor;
 
 @Configuration
 @RequiredArgsConstructor
 public class ApplicationConfig {
 
-    private final UserRepository userRepository;
+    private final AuthenticationConfiguration authenticationConfiguration;
+
+    private final CustomerRepository customerRepository;
+    private final ManagerRepository managerRepository;
 
     @Bean
-    public UserDetailsService userDetailsService() {
-        return new UserDetailsServiceImpl(userRepository);
+    public CustomerDetailsService customerDetailsService() {
+        return new CustomerDetailsService(customerRepository);
+    }
+
+    @Bean
+    public ManagerDetailsService managerDetailsService() {
+        return new ManagerDetailsService(managerRepository);
     }
 
     @Bean
@@ -32,17 +38,12 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public AuthenticationProvider authenticationProvider() {
-        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
-        provider.setUserDetailsService(userDetailsService());
-        provider.setPasswordEncoder(passwordEncoder());
-
-        return provider;
+    public CustomerAuthenticationProvider customerAuthenticationProvider() {
+        return new CustomerAuthenticationProvider(customerDetailsService(), passwordEncoder());
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-            throws Exception {
+    public AuthenticationManager authenticationManager() throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 }

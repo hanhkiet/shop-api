@@ -25,7 +25,7 @@ public class OrderAddress {
 
     @ManyToOne
     @JoinColumn(name = "user_uuid")
-    private User user;
+    private Customer user;
 
     private String recipientName;
     private String recipientPhone;

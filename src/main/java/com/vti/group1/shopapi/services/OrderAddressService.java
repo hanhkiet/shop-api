@@ -8,13 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.vti.group1.shopapi.entity.OrderAddress;
-import com.vti.group1.shopapi.entity.User;
+import com.vti.group1.shopapi.entity.Customer;
 import com.vti.group1.shopapi.exception.InvalidAddressDataException;
 import com.vti.group1.shopapi.model.AddAddressRequest;
 import com.vti.group1.shopapi.model.DeleteAddressRequest;
 import com.vti.group1.shopapi.model.UpdateAddressRequest;
 import com.vti.group1.shopapi.repository.OrderAddressRepository;
-import com.vti.group1.shopapi.repository.UserRepository;
+import com.vti.group1.shopapi.repository.CustomerRepository;
 
 import lombok.AllArgsConstructor;
 
@@ -25,7 +25,7 @@ public class OrderAddressService {
     private static final Logger logger = LoggerFactory.getLogger(OrderAddressService.class);
 
     private final OrderAddressRepository orderAddressRepository;
-    private final UserRepository userRepository;
+    private final CustomerRepository userRepository;
 
     public List<OrderAddress> getAddresses() {
         logger.info("Get all addresses");
@@ -61,7 +61,7 @@ public class OrderAddressService {
             throw new InvalidAddressDataException("City is null");
         }
 
-        User user = userRepository.findByEmail(userEmail);
+        Customer user = userRepository.findByEmail(userEmail);
 
         if (user == null) {
             logger.error("User not found");
