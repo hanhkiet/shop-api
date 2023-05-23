@@ -36,6 +36,11 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.POST, "/api/v1/auth/logout").authenticated();
 
         http.authorizeHttpRequests()
+                .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll();
+        http.authorizeHttpRequests()
+                .requestMatchers(HttpMethod.GET, "/api/v1/menus/**").permitAll();
+
+        http.authorizeHttpRequests()
                 .requestMatchers("/api/v1/account/**").authenticated();
 
         http.sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
