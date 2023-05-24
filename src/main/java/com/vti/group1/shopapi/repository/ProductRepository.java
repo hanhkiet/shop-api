@@ -1,6 +1,5 @@
 package com.vti.group1.shopapi.repository;
 
-import com.vti.group1.shopapi.entity.Color;
 import com.vti.group1.shopapi.entity.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
 
