@@ -30,4 +30,23 @@ public class CustomerAccountService {
                 .username(user.getUsername())
                 .build();
     }
+
+    public AccountDto updateAccount(String username, AccountDto accountDto) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RestException(HttpStatus.BAD_REQUEST, "User not found"));
+
+        Customer customer = customerRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RestException(HttpStatus.BAD_REQUEST, "Customer not found"));
+
+        customer.setFirstName(accountDto.getFirstName());
+        customer.setLastName(accountDto.getLastName());
+
+        customerRepository.save(customer);
+
+        return AccountDto.builder()
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .username(user.getUsername())
+                .build();
+    }
 }

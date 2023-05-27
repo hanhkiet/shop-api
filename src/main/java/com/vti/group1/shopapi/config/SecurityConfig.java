@@ -4,7 +4,6 @@ import com.vti.group1.shopapi.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -25,10 +24,13 @@ public class SecurityConfig {
                 .addFilterBefore(new JwtAuthenticationFilter(jwtService),
                                  UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable().sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers(HttpMethod.POST, "/api/customer/auth/**").permitAll()
-                        .anyRequest().authenticated());
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.authorizeHttpRequests(requests -> requests
+                .requestMatchers("/api/customer/auth/**").permitAll());
+
+        http.authorizeHttpRequests(requests -> requests
+                .requestMatchers("/api/manager/auth/**").permitAll());
 
         return http.build();
     }

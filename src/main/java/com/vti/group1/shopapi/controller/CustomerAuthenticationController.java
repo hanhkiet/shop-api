@@ -1,18 +1,15 @@
 package com.vti.group1.shopapi.controller;
 
-import com.vti.group1.shopapi.service.JwtService;
 import com.vti.group1.shopapi.dto.CredentialsDto;
 import com.vti.group1.shopapi.dto.RegisterDto;
 import com.vti.group1.shopapi.dto.UserDto;
 import com.vti.group1.shopapi.service.CustomerAuthService;
+import com.vti.group1.shopapi.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/customer/auth")
@@ -52,5 +49,12 @@ public class CustomerAuthenticationController {
     @PostMapping("/logout")
     public ResponseEntity<String> logout() {
         return ResponseEntity.ok().body("Logout successfully");
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<String> changePassword(
+            @AuthenticationPrincipal String name, @RequestBody CredentialsDto credentialsDto) {
+        customerAuthService.changePassword(name, credentialsDto);
+        return ResponseEntity.ok().body("Change password successfully");
     }
 }

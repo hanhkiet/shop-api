@@ -98,4 +98,15 @@ public class CustomerAuthService {
 
         SecurityContextHolder.clearContext();
     }
+
+    public void changePassword(String username, CredentialsDto credentialsDto) {
+        String password = credentialsDto.getPassword();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
+                                                     "Invalid " + "credentials"));
+
+        user.setPassword(passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
 }
