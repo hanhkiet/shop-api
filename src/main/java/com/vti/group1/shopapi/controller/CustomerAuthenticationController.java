@@ -1,33 +1,56 @@
 package com.vti.group1.shopapi.controller;
 
+import com.vti.group1.shopapi.service.JwtService;
+import com.vti.group1.shopapi.dto.CredentialsDto;
+import com.vti.group1.shopapi.dto.RegisterDto;
+import com.vti.group1.shopapi.dto.UserDto;
 import com.vti.group1.shopapi.service.CustomerAuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/v1/customer/auth")
+@RequestMapping("/api/customer/auth")
 @RequiredArgsConstructor
 public class CustomerAuthenticationController {
 
     private final CustomerAuthService customerAuthService;
-
-    @PostMapping("/register")
-    public ResponseEntity<String> register(
-            @RequestHeader("username") String username,
-            @RequestHeader("password") String password) {
-
-        customerAuthService.register(username, password);
-        return ResponseEntity.ok("Register successfully!");
-    }
+    private final JwtService jwtService;
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(
-            @RequestHeader("username") String username,
-            @RequestHeader("password") String password) {
-        return ResponseEntity.ok("Login successfully!");
+    public ResponseEntity<UserDto> login(
+            @RequestBody CredentialsDto credentialsDto) {
+        UserDto userDto = customerAuthService.login(credentialsDto);
+
+        HttpHeaders headers = createHeadersWithCookie(userDto);
+
+        return ResponseEntity.ok().headers(headers).body(userDto);
+    }
+
+    @PostMapping("/register")
+    public ResponseEntity<UserDto> register(
+            @RequestBody RegisterDto registerDto) {
+        UserDto userDto = customerAuthService.register(registerDto);
+        HttpHeaders headers = createHeadersWithCookie(userDto);
+
+        return ResponseEntity.ok().headers(headers).body(userDto);
+    }
+
+    private HttpHeaders createHeadersWithCookie(UserDto userDto) {
+        HttpHeaders headers = new HttpHeaders();
+        String token = jwtService.createToken(userDto.getUsername());
+        headers.add(HttpHeaders.SET_COOKIE, "jwt=" + token + "; Path=/; HttpOnly; " +
+                "SameSite=None");
+        return headers;
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<String> logout() {
+        return ResponseEntity.ok().body("Logout successfully");
     }
 }

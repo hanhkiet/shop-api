@@ -1,12 +1,16 @@
 package com.vti.group1.shopapi.service;
 
+import com.vti.group1.shopapi.dto.CredentialsDto;
+import com.vti.group1.shopapi.dto.RegisterDto;
+import com.vti.group1.shopapi.dto.UserDto;
+import com.vti.group1.shopapi.entity.Customer;
 import com.vti.group1.shopapi.entity.Role;
 import com.vti.group1.shopapi.entity.User;
-import com.vti.group1.shopapi.exception.ExistedUsernameException;
+import com.vti.group1.shopapi.exception.RestException;
+import com.vti.group1.shopapi.repository.CustomerRepository;
 import com.vti.group1.shopapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -15,21 +19,83 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomerAuthService {
     private final UserRepository userRepository;
+    private final CustomerRepository customerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void register(String username, String password) {
+    public UserDto login(CredentialsDto credentialsDto) {
+        String username = credentialsDto.getUsername();
+        String password = credentialsDto.getPassword();
 
-        if (userRepository.existsByUsername(username)) {
-            throw new ExistedUsernameException("Username already exists!");
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
+                                                     "Invalid " + "credentials"));
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
+            throw new RestException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
         }
 
-        var newUser = User.builder().username(username).password(passwordEncoder.encode(password))
-                .role(Role.CUSTOMER).build();
+        Customer customer = customerRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
+                                                     "Invalid " + "credentials"));
 
-        userRepository.save(newUser);
+        return UserDto.builder()
+                .uuid(customer.getUuid())
+                .username(user.getUsername())
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .build();
+    }
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(newUser, null, newUser.getAuthorities());
+    public UserDto register(RegisterDto registerDto) {
+        String username = registerDto.getUsername();
+        String password = registerDto.getPassword();
+        String firstName = registerDto.getFirstName();
+        String lastName = registerDto.getLastName();
 
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        if (firstName == null || firstName.isEmpty()) {
+            throw new RestException(HttpStatus.BAD_REQUEST, "First name is required");
+        }
+
+        if (lastName == null || lastName.isEmpty()) {
+            throw new RestException(HttpStatus.BAD_REQUEST, "Last name is required");
+        }
+
+        if (username == null || username.isEmpty()) {
+            throw new RestException(HttpStatus.BAD_REQUEST, "Username is required");
+        }
+
+        if (password == null || password.isEmpty()) {
+            throw new RestException(HttpStatus.BAD_REQUEST, "Password is required");
+        }
+
+        if (userRepository.existsByUsername(username)) {
+            throw new RestException(HttpStatus.BAD_REQUEST, String.format(
+                    "Username %s already " + "exists", username));
+        }
+
+        User user = User.builder().username(username).role(Role.CUSTOMER).build();
+        user.setPassword(passwordEncoder.encode(password));
+
+        Customer customer = Customer.builder().firstName(firstName).lastName(lastName).user(user)
+                .build();
+
+        Customer savedCustomer = customerRepository.save(customer);
+
+        return UserDto.builder()
+                .uuid(savedCustomer.getUuid())
+                .username(savedCustomer.getUser().getUsername())
+                .firstName(savedCustomer.getFirstName())
+                .lastName(savedCustomer.getLastName())
+                .build();
+    }
+
+    public void logout(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
+                                                     "Invalid " + "credentials"));
+
+        userRepository.save(user);
+
+        SecurityContextHolder.clearContext();
     }
 }
