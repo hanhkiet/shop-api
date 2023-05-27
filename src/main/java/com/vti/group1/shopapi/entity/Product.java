@@ -22,5 +22,6 @@ public class Product {
     private String name;
     private Double price;
     @Convert(converter = StringListConverter.class)
+    @Column(length=1000)
     private List<String> images;
 }
