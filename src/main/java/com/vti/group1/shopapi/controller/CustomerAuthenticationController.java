@@ -41,7 +41,7 @@ public class CustomerAuthenticationController {
     private HttpHeaders createHeadersWithCookie(UserDto userDto) {
         HttpHeaders headers = new HttpHeaders();
         String token = jwtService.createToken(userDto.getUsername());
-        headers.add(HttpHeaders.SET_COOKIE, "jwt=" + token + "; Path=/; HttpOnly; " +
+        headers.add(HttpHeaders.SET_COOKIE, "customerJwt=" + token + "; Path=/; HttpOnly; " +
                 "SameSite=None; Secure");
         return headers;
     }

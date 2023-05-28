@@ -14,10 +14,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+public class JwtCustomerAuthenticationFilter extends OncePerRequestFilter {
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(JwtCustomerAuthenticationFilter.class);
     private final JwtService jwtService;
 
     @Override
@@ -26,14 +28,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
 
         String jwt = extractTokenFromRequest(request);
-        LOGGER.info("JWT: {}", jwt);
+        LOGGER.info("Manager JWT: {}", jwt);
 
-        if (jwt != null && jwtService.validateToken(jwt)) createAuthenticationForCustomer(jwt);
+        if (jwt != null && jwtService.validateToken(jwt)) createAuthentication(jwt);
 
         filterChain.doFilter(request, response);
     }
 
-    private void createAuthenticationForCustomer(String jwt) {
+    private void createAuthentication(String jwt) {
         try {
             UsernamePasswordAuthenticationToken authentication =
                     jwtService.createAuthentication(jwt);
@@ -48,21 +50,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String extractTokenFromRequest(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
 
-        if (cookies == null) {
-            return null;
-        }
-
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("managerJwt")) {
-                return cookie.getValue();
-            }
-        }
-
-        return null;
+        return Arrays.stream(cookies).filter(cookie -> cookie.getName().equals("customerJwt"))
+                .map(Cookie::getValue).findFirst().orElse(null);
     }
 
     @Override
     public boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getServletPath().startsWith("/api/manager/auth");
+        return !request.getServletPath().startsWith("/api/customer") ||
+                request.getServletPath().startsWith("/api/customer/auth");
     }
 }

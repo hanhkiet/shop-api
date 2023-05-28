@@ -21,10 +21,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.exceptionHandling().authenticationEntryPoint(userAuthenticationEntryPoint).and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtService),
+                .addFilterBefore(new JwtCustomerAuthenticationFilter(jwtService),
+                                 UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtManagerAuthenticationFilter(jwtService),
                                  UsernamePasswordAuthenticationFilter.class)
                 .csrf().disable().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.authorizeHttpRequests(requests -> requests
+                .requestMatchers("/api/customer/auth/**").permitAll());
 
         http.authorizeHttpRequests(requests -> requests
                 .requestMatchers("/api/manager/auth/**").permitAll());
