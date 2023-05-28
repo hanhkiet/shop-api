@@ -34,7 +34,7 @@ public class ManagerAuthenticationController {
         HttpHeaders headers = new HttpHeaders();
         String token = jwtService.createToken(managerDataDto.getUsername());
         headers.add(HttpHeaders.SET_COOKIE,
-                    "jwt=" + token + "; Path=/; HttpOnly; " + "SameSite=None");
+                    "managerJwt=" + token + "; Path=/; HttpOnly; " + "SameSite=None; Secure");
         return headers;
     }
 }

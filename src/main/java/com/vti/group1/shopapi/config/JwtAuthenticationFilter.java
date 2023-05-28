@@ -28,19 +28,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String jwt = extractTokenFromRequest(request);
         LOGGER.info("JWT: {}", jwt);
 
-        if (jwt != null && jwtService.validateToken(jwt)) {
-            try {
-                UsernamePasswordAuthenticationToken authentication =
-                        jwtService.createAuthentication(jwt);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-                LOGGER.info("Authentication: {}", authentication);
-            } catch (Exception e) {
-                SecurityContextHolder.clearContext();
-                throw e;
-            }
-        }
+        if (jwt != null && jwtService.validateToken(jwt)) createAuthenticationForCustomer(jwt);
 
         filterChain.doFilter(request, response);
+    }
+
+    private void createAuthenticationForCustomer(String jwt) {
+        try {
+            UsernamePasswordAuthenticationToken authentication =
+                    jwtService.createAuthentication(jwt);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            LOGGER.info("Authentication: {}", authentication);
+        } catch (Exception e) {
+            SecurityContextHolder.clearContext();
+            throw e;
+        }
     }
 
     private String extractTokenFromRequest(HttpServletRequest request) {
@@ -51,7 +53,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("jwt")) {
+            if (cookie.getName().equals("managerJwt")) {
                 return cookie.getValue();
             }
         }
@@ -61,6 +63,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     public boolean shouldNotFilter(HttpServletRequest request) {
-        return request.getServletPath().startsWith("/api/customer/auth");
+        return request.getServletPath().startsWith("/api/manager/auth");
     }
 }

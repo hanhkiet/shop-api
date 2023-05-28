@@ -24,7 +24,7 @@ public class ManagerAuthService {
 
     @PostConstruct
     public void initAdmin() {
-        User admin = User.builder().username("admin").password(passwordEncoder.encode("admin"))
+        User admin = User.builder().username("admin").password(passwordEncoder.encode("superadmin"))
                 .role(Role.MANAGER).build();
 
         Manager manager = Manager.builder().firstName("Admin").lastName("Admin").user(admin)
