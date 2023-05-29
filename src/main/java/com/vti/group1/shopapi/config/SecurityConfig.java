@@ -38,6 +38,8 @@ public class SecurityConfig {
                 .requestMatchers(HttpMethod.GET, "/api/v1/products/**").permitAll();
         http.authorizeHttpRequests()
                 .requestMatchers(HttpMethod.GET, "/api/v1/menus/**").permitAll();
+        http.authorizeHttpRequests()
+                .requestMatchers(HttpMethod.GET, "/api/v1/items/**").permitAll();
 
         http.authorizeHttpRequests()
                 .requestMatchers("/api/v1/account/**").authenticated();
