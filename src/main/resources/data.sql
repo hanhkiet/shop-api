@@ -10,9 +10,9 @@ INSERT INTO items (product_uuid, size, quantity) VALUES ("a", "XL", 10);
 
 INSERT INTO items (product_uuid, size, quantity) VALUES ("b", "XS", 0);
 INSERT INTO items (product_uuid, size, quantity) VALUES ("b", "S", 0);
-INSERT INTO items (product_uuid, size, quantity) VALUES ("b", "M", 10);
-INSERT INTO items (product_uuid, size, quantity) VALUES ("b", "L", 10);
-INSERT INTO items (product_uuid, size, quantity) VALUES ("b", "XL", 10);
+INSERT INTO items (product_uuid, size, quantity) VALUES ("b", "M", 0);
+INSERT INTO items (product_uuid, size, quantity) VALUES ("b", "L", 0);
+INSERT INTO items (product_uuid, size, quantity) VALUES ("b", "XL", 0);
 
 INSERT INTO menus(name) VALUES ("SHOP");
 
