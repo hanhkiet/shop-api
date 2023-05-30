@@ -19,21 +19,8 @@ public class CategoryProduct {
     private Long id;
     @ManyToOne
     @JoinColumn(referencedColumnName = "uuid")
-    @JsonIgnore
     private Product product;
-    @Column(name = "product_uuid", insertable = false, updatable = false)
-    private String productUuid;
-    public String getProductUuid() {
-        return product.getUuid();
-    }
-
     @ManyToOne
     @JoinColumn(referencedColumnName = "id")
-    @JsonIgnore
     private ProductCollection productCollection;
-    @Column(name = "product_collection_id", insertable = false, updatable = false)
-    private Long productCollectionId;
-    public Long getProductCollectionId() {
-        return productCollection.getId();
-    }
 }
