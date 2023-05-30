@@ -23,11 +23,10 @@ public class Item {
     private Product product;
     @Column(name = "product_uuid", insertable = false, updatable = false)
     private String productUuid;
-
-    public String getProductUuid() {
-        return product.getUuid();
-    }
     @Enumerated(EnumType.STRING)
     private Size size;
     private Integer quantity;
+    public String getProductUuid() {
+        return product.getUuid();
+    }
 }

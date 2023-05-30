@@ -31,3 +31,7 @@ INSERT INTO product_collections (name, collection_type_id) VALUES ("OUTERWEAR", 
 INSERT INTO product_collections (name, collection_type_id) VALUES ("SHORTS", 3);
 INSERT INTO product_collections (name, collection_type_id) VALUES ("TECH JOGGERS", 3);
 INSERT INTO product_collections (name, collection_type_id) VALUES ("LEGGINGS", 3);
+
+
+INSERT INTO category_products (product_uuid, product_collection_id) VALUES ("a", 1);
+INSERT INTO category_products (product_uuid, product_collection_id) VALUES ("b", 1);
