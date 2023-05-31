@@ -28,11 +28,18 @@ public class SecurityConfig {
                 .csrf().disable().sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/api/customer/auth/**").permitAll());
+        http.authorizeHttpRequests(requests -> requests.requestMatchers("/api/v1/customer/auth/**")
+                .permitAll());
 
-        http.authorizeHttpRequests(requests -> requests
-                .requestMatchers("/api/manager/auth/**").permitAll());
+        http.authorizeHttpRequests(requests -> requests.requestMatchers("/api/v1/customer/**")
+                .hasAuthority("CUSTOMER"));
+
+        http.authorizeHttpRequests(requests -> requests.requestMatchers("/api/v1/manager/auth/**")
+                .permitAll());
+
+        http.authorizeHttpRequests(requests -> requests.requestMatchers("/api/v1/manager/**")
+                .hasAuthority("MANAGER"));
+
 
         return http.build();
     }

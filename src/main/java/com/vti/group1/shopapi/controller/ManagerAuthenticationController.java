@@ -4,13 +4,15 @@ import com.vti.group1.shopapi.dto.CredentialsDto;
 import com.vti.group1.shopapi.dto.ManagerDataDto;
 import com.vti.group1.shopapi.service.JwtService;
 import com.vti.group1.shopapi.service.ManagerAuthService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/manager/auth")
+@RequestMapping("/api/v1/manager/auth")
+@Transactional
 @RequiredArgsConstructor
 public class ManagerAuthenticationController {
 

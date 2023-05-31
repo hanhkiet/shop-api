@@ -18,9 +18,16 @@ import java.util.Arrays;
 
 @RequiredArgsConstructor
 public class JwtCustomerAuthenticationFilter extends OncePerRequestFilter {
+
     private static final Logger LOGGER =
             LoggerFactory.getLogger(JwtCustomerAuthenticationFilter.class);
     private final JwtService jwtService;
+
+    @Override
+    public boolean shouldNotFilter(HttpServletRequest request) {
+        return request.getServletPath().startsWith("/api/v1/customer/auth") ||
+                !request.getServletPath().startsWith("/api/v1/customer");
+    }
 
     @Override
     protected void doFilterInternal(
@@ -28,7 +35,7 @@ public class JwtCustomerAuthenticationFilter extends OncePerRequestFilter {
             FilterChain filterChain) throws ServletException, IOException {
 
         String jwt = extractTokenFromRequest(request);
-        LOGGER.info("Manager JWT: {}", jwt);
+        LOGGER.info("JWT: {}", jwt);
 
         if (jwt != null && jwtService.validateToken(jwt)) createAuthentication(jwt);
 
@@ -40,7 +47,6 @@ public class JwtCustomerAuthenticationFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken authentication =
                     jwtService.createAuthentication(jwt);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            LOGGER.info("Authentication: {}", authentication);
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
             throw e;
@@ -50,13 +56,9 @@ public class JwtCustomerAuthenticationFilter extends OncePerRequestFilter {
     private String extractTokenFromRequest(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
 
-        return Arrays.stream(cookies).filter(cookie -> cookie.getName().equals("customerJwt"))
-                .map(Cookie::getValue).findFirst().orElse(null);
-    }
+        if (cookies == null) return null;
 
-    @Override
-    public boolean shouldNotFilter(HttpServletRequest request) {
-        return !request.getServletPath().startsWith("/api/customer") ||
-                request.getServletPath().startsWith("/api/customer/auth");
+        return Arrays.stream(cookies).filter(cookie -> cookie.getName().equals("customerJwt"))
+                .map(Cookie::getValue).findAny().orElse(null);
     }
 }
