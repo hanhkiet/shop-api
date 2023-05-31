@@ -1,11 +1,12 @@
 package com.vti.group1.shopapi.entity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,19 +14,20 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
-@Table(name = "category_products")
-public class CategoryProduct {
+@Table(name = "customers")
+public class Customer {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "uuid")
-    private Product product;
-    @ManyToOne
-    @JoinColumn(referencedColumnName = "id")
-    private ProductCollection productCollection;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String uuid;
+
+    private String firstName;
+    private String lastName;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
 }
