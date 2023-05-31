@@ -1,8 +1,10 @@
 package com.vti.group1.shopapi.controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vti.group1.shopapi.dto.AccountDto;
 import com.vti.group1.shopapi.dto.AddressDto;
 import com.vti.group1.shopapi.dto.CredentialsDto;
+import com.vti.group1.shopapi.dto.UpdatePasswordDto;
 import com.vti.group1.shopapi.service.CustomerAccountService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -30,14 +32,17 @@ public class CustomerAccountController {
 
     @PutMapping("/password")
     public ResponseEntity<Void> updatePassword(
-            @RequestBody CredentialsDto credentialsDto) {
+            @RequestBody UpdatePasswordDto updatePasswordDto) {
+        CredentialsDto oldCredentials = updatePasswordDto.getOldCredentials();
+        CredentialsDto newCredentials = updatePasswordDto.getNewCredentials();
 
-        customerAccountService.updatePassword(credentialsDto);
+        customerAccountService.updatePassword(oldCredentials, newCredentials);
         return ResponseEntity.ok().build();
     }
 
     @PutMapping
-    public ResponseEntity<AccountDto> updateAccount(AccountDto accountDto) {
+    public ResponseEntity<AccountDto> updateAccount(
+            @RequestBody AccountDto accountDto) {
         AccountDto account = customerAccountService.updateAccount(accountDto);
         return ResponseEntity.ok(account);
     }
