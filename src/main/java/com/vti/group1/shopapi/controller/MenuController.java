@@ -2,6 +2,7 @@ package com.vti.group1.shopapi.controller;
 
 import java.util.List;
 
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 @RestController
 @RequestMapping("/api/v1/menus")
 @RequiredArgsConstructor
+@Transactional
 public class MenuController {
     private final MenuRepository menuRepository;
 

@@ -2,6 +2,7 @@ package com.vti.group1.shopapi.controller;
 
 import com.vti.group1.shopapi.entity.CategoryProduct;
 import com.vti.group1.shopapi.repository.CategoryProductRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/category-products")
 @RequiredArgsConstructor
+@Transactional
 public class CategoryProductController {
     private final CategoryProductRepository categoryProductRepository;
     @GetMapping()
