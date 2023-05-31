@@ -5,6 +5,8 @@ import com.vti.group1.shopapi.dto.RegisterDto;
 import com.vti.group1.shopapi.dto.UserDto;
 import com.vti.group1.shopapi.service.CustomerAuthService;
 import com.vti.group1.shopapi.service.JwtService;
+import com.vti.group1.shopapi.service.TokenService;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
@@ -12,42 +14,50 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/customer/auth")
+@RequestMapping("/api/v1/customer/auth")
+@Transactional
 @RequiredArgsConstructor
 public class CustomerAuthenticationController {
 
     private final CustomerAuthService customerAuthService;
     private final JwtService jwtService;
+    private final TokenService tokenService;
 
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(
             @RequestBody CredentialsDto credentialsDto) {
         UserDto userDto = customerAuthService.login(credentialsDto);
-
-        HttpHeaders headers = createHeadersWithCookie(userDto);
+        String token = jwtService.createToken(userDto.getUsername());
+        HttpHeaders headers = createHeadersWithCookie(token);
+        tokenService.saveToken(userDto.getUsername(), token);
 
         return ResponseEntity.ok().headers(headers).body(userDto);
+    }
+
+    private HttpHeaders createHeadersWithCookie(String token) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.SET_COOKIE,
+                    "customerJwt=" + token + "; Path=/; HttpOnly; " + "SameSite=None; Secure");
+
+        return headers;
     }
 
     @PostMapping("/register")
     public ResponseEntity<UserDto> register(
             @RequestBody RegisterDto registerDto) {
         UserDto userDto = customerAuthService.register(registerDto);
-        HttpHeaders headers = createHeadersWithCookie(userDto);
+        String token = jwtService.createToken(userDto.getUsername());
+        HttpHeaders headers = createHeadersWithCookie(token);
+        tokenService.saveToken(userDto.getUsername(), token);
 
         return ResponseEntity.ok().headers(headers).body(userDto);
     }
 
-    private HttpHeaders createHeadersWithCookie(UserDto userDto) {
-        HttpHeaders headers = new HttpHeaders();
-        String token = jwtService.createToken(userDto.getUsername());
-        headers.add(HttpHeaders.SET_COOKIE, "customerJwt=" + token + "; Path=/; HttpOnly; " +
-                "SameSite=None; Secure");
-        return headers;
-    }
-
     @PostMapping("/logout")
-    public ResponseEntity<String> logout() {
+    public ResponseEntity<String> logout(
+            @AuthenticationPrincipal String name
+                                        ) {
+        customerAuthService.logout(name);
         return ResponseEntity.ok().body("Logout successfully");
     }
 

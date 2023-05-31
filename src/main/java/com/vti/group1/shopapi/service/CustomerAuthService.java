@@ -8,6 +8,7 @@ import com.vti.group1.shopapi.entity.Role;
 import com.vti.group1.shopapi.entity.User;
 import com.vti.group1.shopapi.exception.RestException;
 import com.vti.group1.shopapi.repository.CustomerRepository;
+import com.vti.group1.shopapi.repository.TokenRepository;
 import com.vti.group1.shopapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,8 +19,10 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class CustomerAuthService {
+
     private final UserRepository userRepository;
     private final CustomerRepository customerRepository;
+    private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UserDto login(CredentialsDto credentialsDto) {
@@ -38,12 +41,8 @@ public class CustomerAuthService {
                 .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
                                                      "Invalid " + "credentials"));
 
-        return UserDto.builder()
-                .uuid(customer.getUuid())
-                .username(user.getUsername())
-                .firstName(customer.getFirstName())
-                .lastName(customer.getLastName())
-                .build();
+        return UserDto.builder().uuid(customer.getUuid()).username(user.getUsername())
+                .firstName(customer.getFirstName()).lastName(customer.getLastName()).build();
     }
 
     public UserDto register(RegisterDto registerDto) {
@@ -81,11 +80,9 @@ public class CustomerAuthService {
 
         Customer savedCustomer = customerRepository.save(customer);
 
-        return UserDto.builder()
-                .uuid(savedCustomer.getUuid())
-                .username(savedCustomer.getUser().getUsername())
-                .firstName(savedCustomer.getFirstName())
-                .lastName(savedCustomer.getLastName())
+        return UserDto.builder().uuid(savedCustomer.getUuid()).username(savedCustomer.getUser()
+                                                                                .getUsername())
+                .firstName(savedCustomer.getFirstName()).lastName(savedCustomer.getLastName())
                 .build();
     }
 
@@ -94,8 +91,7 @@ public class CustomerAuthService {
                 .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
                                                      "Invalid " + "credentials"));
 
-        userRepository.save(user);
-
+        tokenRepository.deleteById(user.getId());
         SecurityContextHolder.clearContext();
     }
 
