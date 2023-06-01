@@ -25,6 +25,16 @@ public class TokenService {
             throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "User not found");
         }
 
-        tokenRepository.save(Token.builder().user(user.get()).token(token).build());
+        tokenRepository.saveAndFlush(Token.builder().user(user.get()).token(token).build());
+    }
+
+    public void deleteToken(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+
+        if (user.isEmpty()) {
+            throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "User not found");
+        }
+
+        tokenRepository.deleteByUser(user.get());
     }
 }

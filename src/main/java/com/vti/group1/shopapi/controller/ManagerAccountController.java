@@ -2,6 +2,7 @@ package com.vti.group1.shopapi.controller;
 
 import com.vti.group1.shopapi.dto.AccountDto;
 import com.vti.group1.shopapi.dto.CredentialsDto;
+import com.vti.group1.shopapi.dto.UpdatePasswordDto;
 import com.vti.group1.shopapi.service.ManagerAccountService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,11 @@ public class ManagerAccountController {
 
     @PutMapping("/password")
     public ResponseEntity<Void> updatePassword(
-            @RequestBody CredentialsDto credentialsDto) {
-        managerAccountService.updatePassword(credentialsDto);
+            @RequestBody UpdatePasswordDto updatePasswordDto) {
+        CredentialsDto oldCredentials = updatePasswordDto.getOldCredentials();
+        CredentialsDto newCredentials = updatePasswordDto.getNewCredentials();
+
+        managerAccountService.updatePassword(oldCredentials, newCredentials);
         return ResponseEntity.ok().build();
     }
 

@@ -61,6 +61,16 @@ public class CustomerAuthenticationController {
         return ResponseEntity.ok().body("Logout successfully");
     }
 
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refresh(
+            @AuthenticationPrincipal String name) {
+        String token = jwtService.createToken(name);
+        HttpHeaders headers = createHeadersWithCookie(token);
+        tokenService.saveToken(name, token);
+
+        return ResponseEntity.ok().headers(headers).body("Refresh token successfully");
+    }
+
     @PutMapping("/change-password")
     public ResponseEntity<String> changePassword(
             @AuthenticationPrincipal String name, @RequestBody CredentialsDto credentialsDto) {

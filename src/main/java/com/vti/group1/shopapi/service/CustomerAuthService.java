@@ -103,6 +103,6 @@ public class CustomerAuthService {
                                                      "Invalid " + "credentials"));
 
         user.setPassword(passwordEncoder.encode(password));
-        userRepository.save(user);
+        userRepository.saveAndFlush(user);
     }
 }

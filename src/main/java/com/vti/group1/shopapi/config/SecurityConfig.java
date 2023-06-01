@@ -39,8 +39,8 @@ public class SecurityConfig {
                 http.authorizeHttpRequests(requests -> requests.requestMatchers("/api/v1/manager/auth/**")
                                 .permitAll());
 
-                http.authorizeHttpRequests(requests -> requests
-                                .requestMatchers("/api/manager/auth/**").permitAll());
+                http.authorizeHttpRequests(requests -> requests.requestMatchers("/api/v1/manager/**")
+                                .hasAuthority("MANAGER"));
 
                 return http.build();
         }

@@ -1,5 +1,6 @@
 package com.vti.group1.shopapi.service;
 
+import com.vti.group1.shopapi.dto.AccountDto;
 import com.vti.group1.shopapi.dto.CredentialsDto;
 import com.vti.group1.shopapi.dto.ManagerDataDto;
 import com.vti.group1.shopapi.entity.Manager;
@@ -7,10 +8,12 @@ import com.vti.group1.shopapi.entity.Role;
 import com.vti.group1.shopapi.entity.User;
 import com.vti.group1.shopapi.exception.RestException;
 import com.vti.group1.shopapi.repository.ManagerRepository;
+import com.vti.group1.shopapi.repository.TokenRepository;
 import com.vti.group1.shopapi.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +24,7 @@ public class ManagerAuthService {
     private final ManagerRepository managerRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final TokenRepository tokenRepository;
 
     @PostConstruct
     public void initAdmin() {
@@ -50,5 +54,26 @@ public class ManagerAuthService {
 
         return ManagerDataDto.builder().uuid(manager.getUuid()).firstName(manager.getFirstName())
                 .lastName(manager.getLastName()).username(user.getUsername()).build();
+    }
+
+    public void logout(String username) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
+                                                     "Invalid " + "credentials"));
+
+        tokenRepository.deleteById(user.getId());
+        SecurityContextHolder.clearContext();
+    }
+
+    public AccountDto refresh(String name) {
+        User user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
+                                                     "Invalid " + "credentials"));
+
+        Manager manager = managerRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new RestException(HttpStatus.BAD_REQUEST, "Manager not found"));
+
+        return AccountDto.builder().username(user.getUsername()).firstName(manager.getFirstName())
+                .lastName(manager.getLastName()).build();
     }
 }
