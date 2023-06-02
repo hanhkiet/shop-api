@@ -20,14 +20,6 @@ public class ManagerAccountService {
     private final ManagerRepository managerRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void updatePassword(CredentialsDto credentialsDto) {
-        User user = userRepository.findByUsername(credentialsDto.getUsername())
-                .orElseThrow(() -> new RestException(HttpStatus.BAD_REQUEST, "User not found!"));
-
-        user.setPassword(passwordEncoder.encode(credentialsDto.getPassword()));
-        userRepository.save(user);
-    }
-
     public AccountDto getAccount(String name) {
         User user = userRepository.findByUsername(name)
                 .orElseThrow(() -> new RestException(HttpStatus.BAD_REQUEST, "User not found!"));
@@ -50,5 +42,17 @@ public class ManagerAccountService {
         manager.setLastName(accountDto.getLastName());
 
         managerRepository.save(manager);
+    }
+
+    public void updatePassword(CredentialsDto oldCredentials, CredentialsDto newCredentials) {
+        User user = userRepository.findByUsername(oldCredentials.getUsername())
+                .orElseThrow(() -> new RestException(HttpStatus.BAD_REQUEST, "User not found!"));
+
+        if (!passwordEncoder.matches(oldCredentials.getPassword(), user.getPassword())) {
+            throw new RestException(HttpStatus.BAD_REQUEST, "Wrong password!");
+        }
+
+        user.setPassword(passwordEncoder.encode(newCredentials.getPassword()));
+        userRepository.save(user);
     }
 }

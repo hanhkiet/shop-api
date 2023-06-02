@@ -7,6 +7,8 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -16,13 +18,15 @@ import java.util.Arrays;
 
 @RequiredArgsConstructor
 public class JwtManagerAuthenticationFilter extends OncePerRequestFilter {
-
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(JwtManagerAuthenticationFilter.class);
     private final JwtService jwtService;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
         return !request.getServletPath().startsWith("/api/v1/manager") ||
-                request.getServletPath().startsWith("/api/v1/manager/auth");
+                request.getServletPath().startsWith("/api/v1/manager/auth") &&
+                        !request.getServletPath().equals("/api/v1/manager/auth/refresh");
     }
 
     @Override
@@ -30,6 +34,7 @@ public class JwtManagerAuthenticationFilter extends OncePerRequestFilter {
             HttpServletRequest request, HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         String jwt = extractTokenFromRequest(request);
+        LOGGER.info("JWT: {}", jwt);
 
         if (jwt != null && jwtService.validateToken(jwt)) createAuthentication(jwt);
 

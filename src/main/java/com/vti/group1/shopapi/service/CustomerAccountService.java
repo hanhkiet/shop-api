@@ -14,6 +14,7 @@ import com.vti.group1.shopapi.repository.OrderAddressRepository;
 import com.vti.group1.shopapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CustomerAccountService {
+    private final PasswordEncoder passwordEncoder;
     private final CustomerRepository customerRepository;
     private final OrderAddressRepository orderAddressRepository;
     private final UserRepository userRepository;
@@ -86,11 +88,15 @@ public class CustomerAccountService {
         orderAddressRepository.deleteById(uuid);
     }
 
-    public void updatePassword(CredentialsDto credentialsDto) {
-        User user = userRepository.findByUsername(credentialsDto.getUsername())
+    public void updatePassword(CredentialsDto oldCredentials, CredentialsDto newCredentials) {
+        User user = userRepository.findByUsername(newCredentials.getUsername())
                 .orElseThrow(() -> new RestException(HttpStatus.BAD_REQUEST, "User not found"));
 
-        user.setPassword(credentialsDto.getPassword());
+        if (!passwordEncoder.matches(oldCredentials.getPassword(), user.getPassword())) {
+            throw new RestException(HttpStatus.BAD_REQUEST, "Invalid credentials");
+        }
+
+        user.setPassword(passwordEncoder.encode(newCredentials.getPassword()));
         userRepository.save(user);
     }
 }
