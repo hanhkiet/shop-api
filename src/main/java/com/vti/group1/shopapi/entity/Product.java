@@ -1,22 +1,13 @@
 package com.vti.group1.shopapi.entity;
 
-import java.util.List;
-
 import com.vti.group1.shopapi.util.StringListConverter;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -36,4 +27,9 @@ public class Product {
     @Convert(converter = StringListConverter.class)
     @Column(length = 1000)
     private List<String> images;
+
+    @ManyToMany
+    @JoinTable(name = "product_collection", joinColumns = @JoinColumn(name = "product_uuid"),
+            inverseJoinColumns = @JoinColumn(name = "collection_id"))
+    private List<Collection> collections;
 }

@@ -7,19 +7,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "product_collections")
-public class ProductCollection {
+@Table(name = "collections")
+public class Collection {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String name;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "collection_type_id")
+
+    @Enumerated(EnumType.STRING)
+    private CollectionType type;
+
+    @ManyToMany(mappedBy = "collections")
     @JsonIgnore
-    private CollectionType collectionType;
+    private List<Product> products;
 }

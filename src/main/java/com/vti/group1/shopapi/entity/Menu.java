@@ -26,5 +26,5 @@ public class Menu {
     private Long id;
     private String name;
     @OneToMany(mappedBy = "menu", cascade = CascadeType.ALL)
-    private List<CollectionType> collectionTypes;
+    private List<CollectionGroup> collectionGroups;
 }
