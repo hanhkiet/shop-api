@@ -22,8 +22,10 @@ public class Product {
 
     private String name;
     private double price;
+
     @Enumerated(EnumType.STRING)
     private Color color;
+
     @Convert(converter = StringListConverter.class)
     @Column(length = 1000)
     private List<String> images;
