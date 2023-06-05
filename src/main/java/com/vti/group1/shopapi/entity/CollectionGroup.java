@@ -20,9 +20,4 @@ public class CollectionGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-
-    @ManyToOne
-    @JoinColumn(name = "menu_id")
-    @JsonIgnore
-    private Menu menu;
 }

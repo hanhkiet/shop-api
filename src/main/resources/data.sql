@@ -1,6 +1,4 @@
 -- CATEGORY DATA --
-INSERT INTO menus(name) VALUES ("SHOP");
-
 SET @FEATURED_TYPE = "FEATURED";
 SET @TOPS_TYPE = "TOPS";
 SET @BOTTOMS_TYPE = "BOTTOMS";
@@ -12,6 +10,12 @@ SET @RED_COLOR = "RED";
 SET @GREEN_COLOR = "GREEN";
 SET @GREY_COLOR = "GREY";
 SET @OLIVE_COLOR = "OLIVE";
+
+SET @SIZE_XS = "XS";
+SET @SIZE_S = "S";
+SET @SIZE_M = "M";
+SET @SIZE_L = "L";
+SET @SIZE_XL = "XL";
 
 -- PRODUCT DATA --
 SET @TANK_ID = 1;
@@ -34,16 +38,14 @@ INSERT INTO collections (id,name,type) VALUES (@LEGGINGS_ID,"LEGGINGS",@BOTTOMS_
 -- TANKS --
 SET @TANK_PRODUCT_1_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
-(@TANK_PRODUCT_1_UUID, "0829. SILVER-LITE™ 2.0 OVERSIZED CUTOFF - BLACK
-\"OTWR\"",
+(@TANK_PRODUCT_1_UUID, '0829. SILVER-LITE™ 2.0 OVERSIZED CUTOFF - BLACK "OTWR"',
 68, @BLACK_COLOR, "https://asrv.com/cdn/shop/files/0829Cutoff_Black_1000x.jpg?v=1683926407,https://asrv.com/cdn/shop/files/DSG0829_Black_SL_Cutoff_1000x.jpg?v=1684546644"
 );
 INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TANK_PRODUCT_1_UUID,@TANK_ID);
 
 SET @TANK_PRODUCT_2_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
-(@TANK_PRODUCT_2_UUID, "0829. SILVER-LITE™ 2.0 OVERSIZED CUTOFF - GREY
-\"OTWR\"",
+(@TANK_PRODUCT_2_UUID, '0829. SILVER-LITE™ 2.0 OVERSIZED CUTOFF - GREY "OTWR"',
 68, @GREY_COLOR, "https://asrv.com/cdn/shop/files/0829Cutoff_SpaceGrey_1400x.jpg?v=1683926417,https://asrv.com/cdn/shop/files/DSG0829_SpaceGrey_SL_Cutoff_1400x.jpg?v=1684546679"
 );
 INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TANK_PRODUCT_2_UUID,@TANK_ID);
