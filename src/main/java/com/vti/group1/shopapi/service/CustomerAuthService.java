@@ -1,5 +1,10 @@
 package com.vti.group1.shopapi.service;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.vti.group1.shopapi.dto.CredentialsDto;
 import com.vti.group1.shopapi.dto.RegisterDto;
 import com.vti.group1.shopapi.dto.UserDto;
@@ -10,11 +15,9 @@ import com.vti.group1.shopapi.exception.RestException;
 import com.vti.group1.shopapi.repository.CustomerRepository;
 import com.vti.group1.shopapi.repository.TokenRepository;
 import com.vti.group1.shopapi.repository.UserRepository;
+
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -25,13 +28,26 @@ public class CustomerAuthService {
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
 
+    @PostConstruct
+    public void initDefaultCustomer() {
+        if (!userRepository.existsByUsername("guest")) {
+            User user = User.builder().username("guest").role(Role.CUSTOMER).build();
+            user.setPassword(passwordEncoder.encode("12345asd"));
+
+            Customer customer = Customer.builder().firstName("First name").lastName("Last name").user(user)
+                    .build();
+
+            customerRepository.save(customer);
+        }
+    }
+
     public UserDto login(CredentialsDto credentialsDto) {
         String username = credentialsDto.getUsername();
         String password = credentialsDto.getPassword();
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
-                                                     "Invalid " + "credentials"));
+                        "Invalid " + "credentials"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RestException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
@@ -39,7 +55,7 @@ public class CustomerAuthService {
 
         Customer customer = customerRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
-                                                     "Invalid " + "credentials"));
+                        "Invalid " + "credentials"));
 
         return UserDto.builder().uuid(customer.getUuid()).username(user.getUsername())
                 .firstName(customer.getFirstName()).lastName(customer.getLastName()).build();
@@ -81,7 +97,7 @@ public class CustomerAuthService {
         Customer savedCustomer = customerRepository.save(customer);
 
         return UserDto.builder().uuid(savedCustomer.getUuid()).username(savedCustomer.getUser()
-                                                                                .getUsername())
+                .getUsername())
                 .firstName(savedCustomer.getFirstName()).lastName(savedCustomer.getLastName())
                 .build();
     }
@@ -89,7 +105,7 @@ public class CustomerAuthService {
     public void logout(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
-                                                     "Invalid " + "credentials"));
+                        "Invalid " + "credentials"));
 
         tokenRepository.deleteById(user.getId());
         SecurityContextHolder.clearContext();
@@ -100,7 +116,7 @@ public class CustomerAuthService {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
-                                                     "Invalid " + "credentials"));
+                        "Invalid " + "credentials"));
 
         user.setPassword(passwordEncoder.encode(password));
         userRepository.saveAndFlush(user);

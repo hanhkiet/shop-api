@@ -1,19 +1,27 @@
 package com.vti.group1.shopapi.service;
 
-import com.vti.group1.shopapi.entity.Collection;
-import com.vti.group1.shopapi.entity.CollectionType;
-import com.vti.group1.shopapi.exception.RestException;
-import com.vti.group1.shopapi.repository.CollectionRepository;
-import lombok.RequiredArgsConstructor;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import com.vti.group1.shopapi.dto.ProductDto;
+import com.vti.group1.shopapi.entity.Collection;
+import com.vti.group1.shopapi.entity.CollectionType;
+import com.vti.group1.shopapi.entity.Product;
+import com.vti.group1.shopapi.exception.RestException;
+import com.vti.group1.shopapi.mapper.ProductMapper;
+import com.vti.group1.shopapi.repository.CollectionRepository;
+import com.vti.group1.shopapi.repository.ProductRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class StorageService {
     private final CollectionRepository collectionRepository;
+    private final ProductRepository productRepository;
+    private final ProductMapper productMapper;
 
     public List<Collection> getAllCollections() {
         return collectionRepository.findAll();
@@ -44,5 +52,18 @@ public class StorageService {
 
     public List<CollectionType> getAllCollectionTypes() {
         return List.of(CollectionType.values());
+    }
+
+    public List<ProductDto> getAllProducts(CollectionType collectionType, int collectionId) {
+        List<Product> products = productRepository.findAll();
+        var resultStream = products.stream()
+                .filter(p -> p.getCollections().stream().anyMatch(c -> c.getType() == collectionType));
+
+        if (collectionId != 0) {
+            resultStream = resultStream
+                    .filter(p -> p.getCollections().stream().anyMatch(c -> c.getId() == collectionId));
+        }
+
+        return resultStream.map(productMapper::toDto).toList();
     }
 }
