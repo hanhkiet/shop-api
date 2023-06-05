@@ -7,5 +7,15 @@ public enum Color {
     BLACK,
     WHITE,
     GREY,
-    OLIVE
+    OLIVE,
+    NAVY,
+    CHAI,
+    PLUM,
+    TAUPE,
+    SAGE,
+    CREAM,
+    RAVEN,
+    SMOKE,
+    SKY,
+    STONE,
 }
