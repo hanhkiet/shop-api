@@ -41,11 +41,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests(requests -> requests.requestMatchers("/api/v1/manager/**")
                 .hasAuthority(Role.MANAGER.toString()));
 
-        http.authorizeHttpRequests(requests -> requests.requestMatchers("/api/v1/products/**")
-                .permitAll()
-                .requestMatchers("/api/v1/menus/**").permitAll()
-                .requestMatchers("/api/v1/items/**").permitAll()
-                .requestMatchers("/api/v1/category-products/**").permitAll());
+        http.authorizeHttpRequests(requests -> requests.anyRequest().permitAll());
 
         return http.build();
     }
