@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vti.group1.shopapi.config.JwtCustomerAuthenticationFilter;
 import com.vti.group1.shopapi.dto.CredentialsDto;
 import com.vti.group1.shopapi.dto.RegisterDto;
 import com.vti.group1.shopapi.dto.UserDto;
@@ -42,8 +43,8 @@ public class CustomerAuthenticationController {
 
     private HttpHeaders createHeadersWithCookie(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE,
-                "customerJwt=" + token + "; Path=/; HttpOnly; " + "SameSite=None; Secure");
+        headers.add(HttpHeaders.SET_COOKIE, JwtCustomerAuthenticationFilter.JWT_KEY +
+                "=" + token + "; Path=/; HttpOnly; " + "SameSite=None; Secure");
 
         return headers;
     }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vti.group1.shopapi.config.JwtManagerAuthenticationFilter;
 import com.vti.group1.shopapi.dto.AccountDto;
 import com.vti.group1.shopapi.dto.CredentialsDto;
 import com.vti.group1.shopapi.dto.ManagerDataDto;
@@ -64,8 +65,8 @@ public class ManagerAuthenticationController {
 
     private HttpHeaders createHeadersWithCookie(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE,
-                "managerJwt=" + token + "; Path=/; HttpOnly; " + "SameSite=None; Secure");
+        headers.add(HttpHeaders.SET_COOKIE, JwtManagerAuthenticationFilter.JWT_KEY +
+                "=" + token + "; Path=/; HttpOnly; " + "SameSite=None; Secure");
 
         return headers;
     }
