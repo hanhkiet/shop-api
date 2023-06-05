@@ -48,6 +48,8 @@ SET @SPRING_23_ID = 9;
 INSERT INTO collections (id,name,type) VALUES (@SPRING_23_ID,"SPRING '23 COLLECTION",@FEATURED_TYPE);
 SET @WINTER_22_ID = 10;
 INSERT INTO collections (id,name,type) VALUES (@WINTER_22_ID,"WINTER '22 COLLECTION",@FEATURED_TYPE);
+SET @CORE_ID = 11;
+INSERT INTO collections (id,name,type) VALUES (@CORE_ID,"CORE COLLECTION",@FEATURED_TYPE);
 
 -- TANKS --
 SET @TANK_PRODUCT_1_UUID = UUID();
@@ -187,6 +189,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 78, @BLACK_COLOR, "https://asrv.com/cdn/shop/files/0824Shirt_DuskBlack_1400x.jpg?v=1683925560,https://asrv.com/cdn/shop/files/DSG0824_DuskBlack_SupimaOversized_700x.jpg?v=1684265915"
 );
 INSERT INTO product_collection(product_uuid,collection_id) VALUES (@SHORT_SLEEVE_PRODUCT_9_UUID,@SHORT_SLEEVE_ID);
+INSERT INTO product_collection(product_uuid,collection_id) VALUES (@SHORT_SLEEVE_PRODUCT_9_UUID,@CORE_ID);
 
 SET @SHORT_SLEEVE_PRODUCT_10_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
@@ -194,6 +197,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 78, @NAVY_COLOR, "https://asrv.com/cdn/shop/files/0824Shirt_Navy_1000x.jpg?v=1683925749,https://asrv.com/cdn/shop/files/DSG0824_Navy_SupimaOversized-1_1000x.jpg?v=1683925919"
 );
 INSERT INTO product_collection(product_uuid,collection_id) VALUES (@SHORT_SLEEVE_PRODUCT_10_UUID,@SHORT_SLEEVE_ID);
+INSERT INTO product_collection(product_uuid,collection_id) VALUES (@SHORT_SLEEVE_PRODUCT_10_UUID,@CORE_ID);
 
 -- LONG SLEEVES --
 SET @LONG_SLEEVE_PRODUCT_1_UUID = UUID();
@@ -420,6 +424,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 118, @BLACK_COLOR, "https://asrv.com/cdn/shop/files/0865Shorts_Black_Wings_Black_1400x.jpg?v=1683142256,https://asrv.com/cdn/shop/files/DSG0865_Wings_Black_700x.jpg?v=1683396279"
 );
 INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_1_UUID, @SHORTS_ID);
+INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_1_UUID, @CORE_ID);
 
 SET @SHORTS_PRODUCT_2_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
@@ -427,6 +432,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 118, @RAVEN_COLOR, "https://asrv.com/cdn/shop/files/0865Shorts_Raven_Wings_Black_1400x.jpg?v=1683142256,https://asrv.com/cdn/shop/files/DSG0865_Wings_Raven_1000x.jpg?v=1683396475"
 );
 INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_2_UUID, @SHORTS_ID);
+INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_2_UUID, @CORE_ID);
 
 SET @SHORTS_PRODUCT_3_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
@@ -434,6 +440,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 118, @NAVY_COLOR, "https://asrv.com/cdn/shop/files/0865Shorts_Navy_Wings_Black_1400x.jpg?v=1683142256,https://asrv.com/cdn/shop/files/DSG0865_Wings_Navy_1000x.jpg?v=1683396375"
 );
 INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_3_UUID, @SHORTS_ID);
+INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_3_UUID, @CORE_ID);
 
 SET @SHORTS_PRODUCT_4_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
@@ -441,6 +448,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 118, @TAUPE_COLOR, "https://asrv.com/cdn/shop/files/0865Shorts_DeepTaupe_Wings_Black_1000x.jpg?v=1683142298,https://asrv.com/cdn/shop/files/DSG0865_Wings_DeepTaupe_1000x.jpg?v=1683396328"
 );
 INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_4_UUID, @SHORTS_ID);
+INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_4_UUID, @CORE_ID);
 
 SET @SHORTS_PRODUCT_5_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
@@ -448,6 +456,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 118, @OLIVE_COLOR, "https://asrv.com/cdn/shop/files/0865Shorts_Olive_Wings_Black_1400x.jpg?v=1683142256,https://asrv.com/cdn/shop/files/DSG0865_Wings_Olive_1000x.jpg?v=1683396425"
 );
 INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_5_UUID, @SHORTS_ID);
+INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_5_UUID, @CORE_ID);
 
 SET @SHORTS_PRODUCT_6_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
@@ -455,6 +464,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 118, @SAGE_COLOR, "https://asrv.com/cdn/shop/files/0865Shorts_Sage_Wings_Black_1400x.jpg?v=1683142256,https://asrv.com/cdn/shop/files/DSG0865_Wings_Sage_1000x.jpg?v=1683396520"
 );
 INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_6_UUID, @SHORTS_ID);
+INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_6_UUID, @CORE_ID);
 
 SET @SHORTS_PRODUCT_7_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
@@ -462,6 +472,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 118, @SMOKE_COLOR, "https://asrv.com/cdn/shop/files/0865Shorts_SandSmoke_Wings_Black_1400x.jpg?v=1683142256,https://asrv.com/cdn/shop/files/DSG0865_Wings_Sand_8e6d5a3f-7c54-437f-80e7-961afe6ad98d_1000x.jpg?v=1683829812"
 );
 INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_7_UUID, @SHORTS_ID);
+INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_7_UUID, @CORE_ID);
 
 SET @SHORTS_PRODUCT_8_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
@@ -469,6 +480,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 118, @GREY_COLOR, "https://asrv.com/cdn/shop/files/0865Shorts_Slate_Wings_Black_1000x.jpg?v=1683142476,https://asrv.com/cdn/shop/files/DSG0865_Wings_Slate_1000x.jpg?v=1683396633"
 );
 INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_8_UUID, @SHORTS_ID);
+INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_8_UUID, @CORE_ID);
 
 SET @SHORTS_PRODUCT_9_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
@@ -476,6 +488,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 118, @BLACK_COLOR, "https://asrv.com/cdn/shop/files/0865Shorts_Black_Bracket_Black_1000x.jpg?v=1683142235,https://asrv.com/cdn/shop/files/DSG0865_Black_Bracket_1000x.jpg?v=1683570469"
 );
 INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_9_UUID, @SHORTS_ID);
+INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_9_UUID, @CORE_ID);
 
 SET @SHORTS_PRODUCT_10_UUID = UUID();
 INSERT INTO products (uuid, name, price, color, images) VALUES
@@ -483,6 +496,7 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 118, @RAVEN_COLOR, "https://asrv.com/cdn/shop/files/0865Shorts_Raven_Bracket_White_1000x.jpg?v=1683142379,https://asrv.com/cdn/shop/files/DSG0865_Brackets_Raven_1000x.jpg?v=1683396148"
 );
 INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_10_UUID, @SHORTS_ID);
+INSERT INTO product_collection(product_uuid, collection_id) VALUES (@SHORTS_PRODUCT_10_UUID, @CORE_ID);
 
 -- TECH JOGGERS --
 SET @TECH_JOGGERS_PRODUCT_1_UUID = UUID();
@@ -553,6 +567,39 @@ INSERT INTO products (uuid, name, price, color, images) VALUES
 148, @BLACK_COLOR, "https://asrv.com/cdn/shop/products/0739Jogger_Black_1000x.jpg?v=1677697123,https://asrv.com/cdn/shop/products/ASRVSpring23E-Comm-197-Edit_1000x.jpg?v=1678831277"
 );
 INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TECH_JOGGERS_PRODUCT_10_UUID,@TECH_JOGGERS_ID);
+INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TECH_JOGGERS_PRODUCT_10_UUID,@SPRING_23_ID);
+
+SET @TECH_JOGGERS_PRODUCT_11_UUID = UUID();
+INSERT INTO products (uuid, name, price, color, images) VALUES
+(@TECH_JOGGERS_PRODUCT_11_UUID, "0693. KINTERRA™ WEATHERPROOF SNAP PANT - BLACK",
+98, @BLACK_COLOR, "https://asrv.com/cdn/shop/products/0693Pant_Black_1000x.jpg?v=1677697123,https://asrv.com/cdn/shop/products/ASRVE-Comm-83_1000x.jpg?v=1670871838"
+);
+INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TECH_JOGGERS_PRODUCT_11_UUID,@TECH_JOGGERS_ID);
+INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TECH_JOGGERS_PRODUCT_11_UUID,@WINTER_22_ID);
+
+SET @TECH_JOGGERS_PRODUCT_12_UUID = UUID();
+INSERT INTO products (uuid, name, price, color, images) VALUES
+(@TECH_JOGGERS_PRODUCT_12_UUID, "0693. KINTERRA™ WEATHERPROOF SNAP PANT - NAVY",
+98, @NAVY_COLOR, "https://asrv.com/cdn/shop/products/0693Pant_Navy_1000x.jpg?v=1677697123,https://asrv.com/cdn/shop/products/ASRVE-Comm-44-Edit_1000x.jpg?v=1670871801"
+);
+INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TECH_JOGGERS_PRODUCT_12_UUID,@TECH_JOGGERS_ID);
+INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TECH_JOGGERS_PRODUCT_12_UUID,@WINTER_22_ID);
+
+SET @TECH_JOGGERS_PRODUCT_13_UUID = UUID();
+INSERT INTO products (uuid, name, price, color, images) VALUES
+(@TECH_JOGGERS_PRODUCT_13_UUID, "0693. KINTERRA™ WEATHERPROOF SNAP PANT - CHAI",
+98, @CHAI_COLOR, "https://asrv.com/cdn/shop/products/0693Pant_Chai_1000x.jpg?v=1677697123,https://asrv.com/cdn/shop/products/ASRV-E-Comm-19_1000x.jpg?v=1670871732"
+);
+INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TECH_JOGGERS_PRODUCT_13_UUID,@TECH_JOGGERS_ID);
+INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TECH_JOGGERS_PRODUCT_13_UUID,@WINTER_22_ID);
+
+SET @TECH_JOGGERS_PRODUCT_14_UUID = UUID();
+INSERT INTO products (uuid, name, price, color, images) VALUES
+(@TECH_JOGGERS_PRODUCT_14_UUID, "0693. KINTERRA™ WEATHERPROOF SNAP PANT - STONE",
+98, @STONE_COLOR, "https://asrv.com/cdn/shop/products/0693Pant_Stone_1000x.jpg?v=1677697123,https://asrv.com/cdn/shop/products/ASRV-E-Comm-57_1000x.jpg?v=1670871702"
+);
+INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TECH_JOGGERS_PRODUCT_14_UUID,@TECH_JOGGERS_ID);
+INSERT INTO product_collection(product_uuid,collection_id) VALUES (@TECH_JOGGERS_PRODUCT_14_UUID,@WINTER_22_ID);
 
 -- LEGGINGS --
 SET @LEGGINGS_PRODUCT_1_UUID = UUID();
