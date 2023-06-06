@@ -5,4 +5,6 @@ import com.vti.group1.shopapi.entity.Product;
 
 public interface ProductMapper {
   ProductDto toDto(Product product);
+
+    Product toEntity(ProductDto productDto);
 }

@@ -21,4 +21,15 @@ public class ProductMapperImpl implements ProductMapper {
         .build();
   }
 
+  @Override
+  public Product toEntity(ProductDto productDto) {
+    return Product.builder()
+        .name(productDto.getName())
+        .price(productDto.getPrice())
+        .color(productDto.getColor())
+        .collections(productDto.getCollections())
+        .images(productDto.getImages())
+        .build();
+  }
+
 }

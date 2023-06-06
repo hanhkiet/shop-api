@@ -12,4 +12,8 @@ public interface ProductRepository extends PagingAndSortingRepository<Product, S
     Optional<Product> findByUuid(String uuid);
 
     List<Product> findAll();
+
+    Product save(Product product);
+
+    void delete(Product product);
 }

@@ -2,6 +2,7 @@ package com.vti.group1.shopapi.controller;
 
 import java.util.List;
 
+import com.vti.group1.shopapi.entity.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -83,5 +84,13 @@ public class CustomerAccountController {
     public ResponseEntity<Void> deleteAddress(@PathVariable String uuid) {
         customerAccountService.deleteAddress(uuid);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<List<Order>> getOrders(
+            @AuthenticationPrincipal String name) {
+
+        List<Order> orders = customerAccountService.getOrders(name);
+        return ResponseEntity.ok(orders);
     }
 }

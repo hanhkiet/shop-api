@@ -18,6 +18,7 @@ public class Manager {
     private String uuid;
 
     private String firstName;
+
     private String lastName;
 
     @OneToOne(cascade = CascadeType.ALL)

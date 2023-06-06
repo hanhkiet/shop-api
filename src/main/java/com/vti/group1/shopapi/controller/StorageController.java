@@ -2,6 +2,7 @@ package com.vti.group1.shopapi.controller;
 
 import java.util.List;
 
+import com.vti.group1.shopapi.entity.Color;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -54,7 +55,29 @@ public class StorageController {
 
     @GetMapping("/products")
     public ResponseEntity<List<ProductDto>> getAllProducts(
-            @RequestParam CollectionType type, @RequestParam int collectionId) {
-        return ResponseEntity.ok(storageService.getAllProducts(type, collectionId));
+            @RequestParam(defaultValue = "UNDEFINED") CollectionType type,
+            @RequestParam(defaultValue = "") String query,
+            @RequestParam(defaultValue = "0") Long collectionId,
+            @RequestParam(defaultValue = "UNDEFINED") Color color) {
+        return ResponseEntity.ok(storageService.getAllProducts(type, query, collectionId, color));
+    }
+
+    @PostMapping("/products")
+    public ResponseEntity<ProductDto> addProduct(
+            @RequestBody ProductDto productDto) {
+        return ResponseEntity.ok(storageService.addProduct(productDto));
+    }
+
+    @PutMapping("/products/{uuid}")
+    public ResponseEntity<ProductDto> updateProduct(
+            @PathVariable String uuid, @RequestBody ProductDto productDto) {
+        return ResponseEntity.ok(storageService.updateProduct(uuid, productDto));
+    }
+
+    @DeleteMapping("/products/{uuid}")
+    public ResponseEntity<String> deleteProduct(
+            @PathVariable String uuid) {
+        storageService.deleteProduct(uuid);
+        return ResponseEntity.ok("Product deleted");
     }
 }

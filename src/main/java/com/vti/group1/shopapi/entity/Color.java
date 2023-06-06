@@ -1,6 +1,7 @@
 package com.vti.group1.shopapi.entity;
 
 public enum Color {
+    UNDEFINED,
     RED,
     BLUE,
     GREEN,

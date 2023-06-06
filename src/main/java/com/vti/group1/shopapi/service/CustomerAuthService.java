@@ -34,8 +34,8 @@ public class CustomerAuthService {
             User user = User.builder().username("guest").role(Role.CUSTOMER).build();
             user.setPassword(passwordEncoder.encode("12345asd"));
 
-            Customer customer = Customer.builder().firstName("First name").lastName("Last name").user(user)
-                    .build();
+            Customer customer = Customer.builder().firstName("First name").lastName("Last name")
+                    .user(user).build();
 
             customerRepository.save(customer);
         }
@@ -47,7 +47,7 @@ public class CustomerAuthService {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
-                        "Invalid " + "credentials"));
+                                                     "Invalid " + "credentials"));
 
         if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RestException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
@@ -55,7 +55,7 @@ public class CustomerAuthService {
 
         Customer customer = customerRepository.findByUserId(user.getId())
                 .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
-                        "Invalid " + "credentials"));
+                                                     "Invalid " + "credentials"));
 
         return UserDto.builder().uuid(customer.getUuid()).username(user.getUsername())
                 .firstName(customer.getFirstName()).lastName(customer.getLastName()).build();
@@ -97,7 +97,7 @@ public class CustomerAuthService {
         Customer savedCustomer = customerRepository.save(customer);
 
         return UserDto.builder().uuid(savedCustomer.getUuid()).username(savedCustomer.getUser()
-                .getUsername())
+                                                                                .getUsername())
                 .firstName(savedCustomer.getFirstName()).lastName(savedCustomer.getLastName())
                 .build();
     }
@@ -105,7 +105,7 @@ public class CustomerAuthService {
     public void logout(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
-                        "Invalid " + "credentials"));
+                                                     "Invalid " + "credentials"));
 
         tokenRepository.deleteById(user.getId());
         SecurityContextHolder.clearContext();
@@ -116,7 +116,7 @@ public class CustomerAuthService {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RestException(HttpStatus.UNAUTHORIZED,
-                        "Invalid " + "credentials"));
+                                                     "Invalid " + "credentials"));
 
         user.setPassword(passwordEncoder.encode(password));
         userRepository.saveAndFlush(user);

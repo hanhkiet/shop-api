@@ -34,4 +34,7 @@ public class Product {
     @JoinTable(name = "product_collection", joinColumns = @JoinColumn(name = "product_uuid"),
             inverseJoinColumns = @JoinColumn(name = "collection_id"))
     private List<Collection> collections;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Catalog> catalogs;
 }

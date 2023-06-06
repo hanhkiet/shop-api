@@ -29,6 +29,7 @@ public class Customer {
     private String uuid;
 
     private String firstName;
+
     private String lastName;
 
     @OneToOne(cascade = CascadeType.ALL)
@@ -37,4 +38,7 @@ public class Customer {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderAddress> addresses;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Order> orders;
 }

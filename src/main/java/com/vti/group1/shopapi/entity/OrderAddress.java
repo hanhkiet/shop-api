@@ -20,9 +20,13 @@ public class OrderAddress {
     private String uuid;
 
     private String recipientName;
+
     private String recipientPhone;
+
     private String street;
+
     private String district;
+
     private String city;
 
     @ManyToOne
