@@ -2,6 +2,7 @@ package com.vti.group1.shopapi.controller;
 
 import java.util.List;
 
+import com.vti.group1.shopapi.dto.SearchPreviewDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,13 +36,13 @@ public class ProductController {
     }
 
     @GetMapping("/search/preview")
-    public ResponseEntity<List<Product>> searchProducts(
+    public ResponseEntity<SearchPreviewDto> searchPreviewProducts(
             @RequestParam String query) {
         return ResponseEntity.ok().body(productService.searchPreviewProducts(query));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<Product>> searchProducts2(
+    public ResponseEntity<List<Product>> searchProducts(
             @RequestParam String query,
             @RequestParam(defaultValue = "0") Integer page) {
         return ResponseEntity.ok().body(productService.searchAllProducts(query, page));
