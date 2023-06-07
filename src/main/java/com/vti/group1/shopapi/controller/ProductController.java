@@ -34,13 +34,13 @@ public class ProductController {
         return ResponseEntity.ok().body(productService.findByUuid(uuid));
     }
 
-    @GetMapping("/search")
+    @GetMapping("/search/preview")
     public ResponseEntity<List<Product>> searchProducts(
             @RequestParam String query) {
         return ResponseEntity.ok().body(productService.searchPreviewProducts(query));
     }
 
-    @GetMapping("/search/{query}")
+    @GetMapping("/search")
     public ResponseEntity<List<Product>> searchProducts2(
             @PathVariable String query,
             @RequestParam(defaultValue = "0") Integer page) {
