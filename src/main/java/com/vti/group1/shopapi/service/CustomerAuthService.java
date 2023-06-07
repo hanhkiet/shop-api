@@ -1,5 +1,10 @@
 package com.vti.group1.shopapi.service;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.vti.group1.shopapi.dto.CredentialsDto;
 import com.vti.group1.shopapi.dto.RegisterDto;
 import com.vti.group1.shopapi.dto.UserDto;
@@ -10,11 +15,9 @@ import com.vti.group1.shopapi.exception.RestException;
 import com.vti.group1.shopapi.repository.CustomerRepository;
 import com.vti.group1.shopapi.repository.TokenRepository;
 import com.vti.group1.shopapi.repository.UserRepository;
+
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +27,19 @@ public class CustomerAuthService {
     private final CustomerRepository customerRepository;
     private final TokenRepository tokenRepository;
     private final PasswordEncoder passwordEncoder;
+
+    @PostConstruct
+    public void initDefaultCustomer() {
+        if (!userRepository.existsByUsername("guest")) {
+            User user = User.builder().username("guest").role(Role.CUSTOMER).build();
+            user.setPassword(passwordEncoder.encode("12345asd"));
+
+            Customer customer = Customer.builder().firstName("First name").lastName("Last name")
+                    .user(user).build();
+
+            customerRepository.save(customer);
+        }
+    }
 
     public UserDto login(CredentialsDto credentialsDto) {
         String username = credentialsDto.getUsername();

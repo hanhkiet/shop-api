@@ -12,21 +12,19 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Entity
-@Table(name = "items")
-public class Item {
+@Table(name = "catalogs")
+public class Catalog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne
-    @JoinColumn(referencedColumnName = "uuid")
+    @JoinColumn(name = "collection_id")
     @JsonIgnore
     private Product product;
-    @Column(name = "product_uuid", insertable = false, updatable = false)
-    private String productUuid;
+
     @Enumerated(EnumType.STRING)
     private Size size;
+
     private Integer quantity;
-    public String getProductUuid() {
-        return product.getUuid();
-    }
 }
