@@ -1,17 +1,24 @@
 package com.vti.group1.shopapi.controller;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.vti.group1.shopapi.config.JwtCustomerAuthenticationFilter;
 import com.vti.group1.shopapi.dto.CredentialsDto;
 import com.vti.group1.shopapi.dto.RegisterDto;
 import com.vti.group1.shopapi.dto.UserDto;
 import com.vti.group1.shopapi.service.CustomerAuthService;
 import com.vti.group1.shopapi.service.JwtService;
 import com.vti.group1.shopapi.service.TokenService;
+
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/customer/auth")
@@ -36,8 +43,8 @@ public class CustomerAuthenticationController {
 
     private HttpHeaders createHeadersWithCookie(String token) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.SET_COOKIE,
-                    "customerJwt=" + token + "; Path=/; HttpOnly; " + "SameSite=None; Secure");
+        headers.add(HttpHeaders.SET_COOKIE, JwtCustomerAuthenticationFilter.JWT_KEY +
+                "=" + token + "; Path=/; HttpOnly; " + "SameSite=None; Secure");
 
         return headers;
     }
@@ -55,8 +62,7 @@ public class CustomerAuthenticationController {
 
     @PostMapping("/logout")
     public ResponseEntity<String> logout(
-            @AuthenticationPrincipal String name
-                                        ) {
+            @AuthenticationPrincipal String name) {
         customerAuthService.logout(name);
         return ResponseEntity.ok().body("Logout successfully");
     }
