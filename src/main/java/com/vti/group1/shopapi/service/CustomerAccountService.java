@@ -36,7 +36,7 @@ public class CustomerAccountService {
         return customerMapper.toDto(customer);
     }
 
-    private Customer findCustomerByUsername(String username) {
+    public Customer findCustomerByUsername(String username) {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RestException(HttpStatus.BAD_REQUEST, "User not found"));
 
