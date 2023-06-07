@@ -1,30 +1,24 @@
 package com.vti.group1.shopapi.service;
 
-import java.util.List;
-import java.util.Objects;
-
-import com.vti.group1.shopapi.entity.Color;
-import com.vti.group1.shopapi.repository.CatalogRepository;
-import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
-
 import com.vti.group1.shopapi.dto.ProductDto;
-import com.vti.group1.shopapi.entity.Collection;
-import com.vti.group1.shopapi.entity.CollectionType;
-import com.vti.group1.shopapi.entity.Product;
+import com.vti.group1.shopapi.entity.*;
 import com.vti.group1.shopapi.exception.RestException;
 import com.vti.group1.shopapi.mapper.ProductMapper;
 import com.vti.group1.shopapi.repository.CollectionRepository;
 import com.vti.group1.shopapi.repository.ProductRepository;
-
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class StorageService {
     private final CollectionRepository collectionRepository;
     private final ProductRepository productRepository;
-    private final CatalogRepository catalogRepository;
     private final ProductMapper productMapper;
 
     public List<Collection> getAllCollections() {
@@ -109,5 +103,36 @@ public class StorageService {
         product.setCollections(productDto.getCollections());
 
         return productMapper.toDto(productRepository.save(product));
+    }
+
+    public List<Catalog> addCatalog(String uuid, List<Catalog> catalogs) {
+        Product product = productRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Product not found"));
+
+        List<Catalog> productCatalogs = product.getCatalogs();
+        List<Catalog> newCatalogs = new LinkedList<>();
+
+        for (Catalog catalog : catalogs) {
+            Catalog productCatalog = productCatalogs.stream().filter(c -> c.getSize() ==
+                    catalog.getSize()).findFirst().orElse(null);
+
+            if (productCatalog != null) {
+                productCatalog.setQuantity(productCatalog.getQuantity() + catalog.getQuantity());
+            } else {
+                catalog.setProduct(product);
+                newCatalogs.add(catalog);
+            }
+        }
+
+        productCatalogs.addAll(newCatalogs);
+
+        return productRepository.save(product).getCatalogs();
+    }
+
+    public List<Catalog> getCatalogs(String uuid) {
+        Product product = productRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Product not found"));
+
+        return product.getCatalogs();
     }
 }

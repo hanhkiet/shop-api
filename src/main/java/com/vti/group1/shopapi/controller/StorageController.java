@@ -1,26 +1,17 @@
 package com.vti.group1.shopapi.controller;
 
-import java.util.List;
-
-import com.vti.group1.shopapi.entity.Color;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.vti.group1.shopapi.dto.ProductDto;
+import com.vti.group1.shopapi.entity.Catalog;
 import com.vti.group1.shopapi.entity.Collection;
 import com.vti.group1.shopapi.entity.CollectionType;
+import com.vti.group1.shopapi.entity.Color;
 import com.vti.group1.shopapi.service.StorageService;
-
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/manager/storage")
@@ -79,5 +70,17 @@ public class StorageController {
             @PathVariable String uuid) {
         storageService.deleteProduct(uuid);
         return ResponseEntity.ok("Product deleted");
+    }
+
+    @PostMapping("/catalogs/{uuid}")
+    public ResponseEntity<List<Catalog>> addCatalog(
+            @PathVariable String uuid, @RequestBody List<Catalog> catalogs) {
+        return ResponseEntity.ok(storageService.addCatalog(uuid, catalogs));
+    }
+
+    @GetMapping("/catalogs/{uuid}")
+    public ResponseEntity<List<Catalog>> getCatalogs(
+            @PathVariable String uuid) {
+        return ResponseEntity.ok(storageService.getCatalogs(uuid));
     }
 }
