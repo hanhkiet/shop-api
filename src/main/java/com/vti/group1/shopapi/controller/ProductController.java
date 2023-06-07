@@ -1,7 +1,6 @@
 package com.vti.group1.shopapi.controller;
 
 import com.vti.group1.shopapi.entity.Product;
-import com.vti.group1.shopapi.repository.ProductRepository;
 import com.vti.group1.shopapi.service.ProductService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -25,7 +24,20 @@ public class ProductController {
 
     @GetMapping("/{uuid}")
     public ResponseEntity<Product> getProductByUuid(
-           @PathVariable String uuid) {
+            @PathVariable String uuid) {
         return ResponseEntity.ok().body(productService.findByUuid(uuid));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<Product>> searchProducts(
+            @RequestParam String query) {
+        return ResponseEntity.ok().body(productService.searchPreviewProducts(query));
+    }
+
+    @GetMapping("/search/{query}")
+    public ResponseEntity<List<Product>> searchProducts2(
+            @PathVariable String query,
+            @RequestParam(defaultValue = "0") Integer page) {
+        return ResponseEntity.ok().body(productService.searchAllProducts(query, page));
     }
 }

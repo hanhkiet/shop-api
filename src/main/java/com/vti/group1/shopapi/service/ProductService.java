@@ -4,6 +4,7 @@ import com.vti.group1.shopapi.entity.Product;
 import com.vti.group1.shopapi.exception.RestException;
 import com.vti.group1.shopapi.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,5 +26,17 @@ public class ProductService {
 
     public List<Product> getAllProducts(Integer page) {
         return productRepository.findAll(PageRequest.of(page, PAGE_SIZE)).toList();
+    }
+
+    public List<Product> searchPreviewProducts(String query) {
+        Page<Product> products = productRepository.searchProducts(query, PageRequest.of(0, 4));
+        return products.toList();
+    }
+
+    public List<Product> searchAllProducts(String query, Integer page) {
+        Page<Product> products = productRepository.searchProducts(query, PageRequest.of(page,
+                                                                                        PAGE_SIZE));
+
+        return products.toList();
     }
 }
