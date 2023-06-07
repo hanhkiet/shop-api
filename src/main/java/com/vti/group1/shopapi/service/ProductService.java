@@ -14,7 +14,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-    private static final Integer PAGE_SIZE = 5;
+    private static final Integer PAGE_SIZE = 40;
     private final ProductRepository productRepository;
 
     public Product findByUuid(String uuid) {

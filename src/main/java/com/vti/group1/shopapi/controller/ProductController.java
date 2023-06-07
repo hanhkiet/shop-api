@@ -42,7 +42,7 @@ public class ProductController {
 
     @GetMapping("/search")
     public ResponseEntity<List<Product>> searchProducts2(
-            @PathVariable String query,
+            @RequestParam String query,
             @RequestParam(defaultValue = "0") Integer page) {
         return ResponseEntity.ok().body(productService.searchAllProducts(query, page));
     }
