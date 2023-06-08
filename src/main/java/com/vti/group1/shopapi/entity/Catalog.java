@@ -19,7 +19,7 @@ public class Catalog {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "collection_id")
+    @JoinColumn(name = "product_uuid")
     @JsonIgnore
     private Product product;
 

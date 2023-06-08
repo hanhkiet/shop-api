@@ -3,6 +3,7 @@ package com.vti.group1.shopapi.dto;
 import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.vti.group1.shopapi.entity.Catalog;
 import com.vti.group1.shopapi.entity.Collection;
 import com.vti.group1.shopapi.entity.Color;
 
@@ -22,4 +23,5 @@ public class ProductDto {
     private Color color;
     private List<String> images;
     private List<Collection> collections;
+    private List<Catalog> catalogs;
 }
