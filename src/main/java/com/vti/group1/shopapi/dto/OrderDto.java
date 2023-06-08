@@ -13,7 +13,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDto {
-    private String userUuid;
     private OrderAddress orderAddress;
     private List<OrderDetail> orderDetails;
 }

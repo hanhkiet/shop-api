@@ -1,6 +1,7 @@
 package com.vti.group1.shopapi.service;
 
 import com.vti.group1.shopapi.dto.SearchPreviewDto;
+import com.vti.group1.shopapi.dto.SearchResult;
 import com.vti.group1.shopapi.entity.Product;
 import com.vti.group1.shopapi.exception.RestException;
 import com.vti.group1.shopapi.repository.ProductRepository;
@@ -34,14 +35,17 @@ public class ProductService {
 
         return SearchPreviewDto.builder()
                 .products(products.toList())
-                .total(products.getTotalPages())
+                .totalElements(products.getTotalElements())
                 .build();
     }
 
-    public List<Product> searchAllProducts(String query, Integer page) {
+    public SearchResult searchAllProducts(String query, Integer page) {
         Page<Product> products = productRepository.searchProducts(query, PageRequest.of(page,
                                                                                         PAGE_SIZE));
 
-        return products.toList();
+        return SearchResult.builder()
+                .products(products.toList())
+                .totalPages(products.getTotalPages())
+                .build();
     }
 }

@@ -10,5 +10,5 @@ import java.util.List;
 @Builder
 public class SearchPreviewDto {
     List<Product> products;
-    Integer total;
+    Long totalElements;
 }
