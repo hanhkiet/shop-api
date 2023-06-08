@@ -105,7 +105,7 @@ public class StorageService {
         return productMapper.toDto(productRepository.save(product));
     }
 
-    public List<Catalog> addCatalog(String uuid, List<Catalog> catalogs) {
+    public ProductDto addCatalog(String uuid, List<Catalog> catalogs) {
         Product product = productRepository.findByUuid(uuid)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Product not found"));
 
@@ -126,7 +126,7 @@ public class StorageService {
 
         productCatalogs.addAll(newCatalogs);
 
-        return productRepository.save(product).getCatalogs();
+        return productMapper.toDto(productRepository.save(product));
     }
 
     public List<Catalog> getCatalogs(String uuid) {

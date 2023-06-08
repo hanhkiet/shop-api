@@ -73,7 +73,7 @@ public class StorageController {
     }
 
     @PostMapping("/catalogs/{uuid}")
-    public ResponseEntity<List<Catalog>> addCatalog(
+    public ResponseEntity<ProductDto> addCatalog(
             @PathVariable String uuid, @RequestBody List<Catalog> catalogs) {
         return ResponseEntity.ok(storageService.addCatalog(uuid, catalogs));
     }

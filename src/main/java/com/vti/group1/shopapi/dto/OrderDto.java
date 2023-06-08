@@ -1,8 +1,6 @@
 package com.vti.group1.shopapi.dto;
 
-import com.vti.group1.shopapi.entity.Catalog;
-import com.vti.group1.shopapi.entity.OrderAddress;
-import com.vti.group1.shopapi.entity.OrderPaymentMethod;
+import com.vti.group1.shopapi.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderDto {
+    private String userUuid;
     private OrderAddress orderAddress;
-    private List<Catalog> catalogs;
-    private OrderPaymentMethod paymentMethod;
+    private List<OrderDetail> orderDetails;
 }
