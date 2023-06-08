@@ -1,5 +1,6 @@
 package com.vti.group1.shopapi.controller;
 
+import com.vti.group1.shopapi.dto.OrderDetailDto;
 import com.vti.group1.shopapi.dto.OrderDto;
 import com.vti.group1.shopapi.dto.ProductDto;
 import com.vti.group1.shopapi.entity.*;
@@ -88,7 +89,7 @@ public class StorageController {
     }
 
     @GetMapping("/orders/{uuid}")
-    public ResponseEntity<List<OrderDetail>> getOrderDetails(
+    public ResponseEntity<List<OrderDetailDto>> getOrderDetails(
             @PathVariable String uuid) {
         return ResponseEntity.ok(storageService.getOrderDetails(uuid));
     }
