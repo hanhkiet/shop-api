@@ -22,7 +22,7 @@ public class Order {
     private String uuid;
 
     @ManyToOne
-    @JoinColumn(name = "order_address_id")
+    @JoinColumn(name = "order_address_uuid")
     private OrderAddress address;
 
     @ManyToOne

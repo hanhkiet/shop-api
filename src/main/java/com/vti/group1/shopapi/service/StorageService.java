@@ -1,10 +1,13 @@
 package com.vti.group1.shopapi.service;
 
+import com.vti.group1.shopapi.dto.OrderDto;
 import com.vti.group1.shopapi.dto.ProductDto;
 import com.vti.group1.shopapi.entity.*;
 import com.vti.group1.shopapi.exception.RestException;
+import com.vti.group1.shopapi.mapper.OrderMapper;
 import com.vti.group1.shopapi.mapper.ProductMapper;
 import com.vti.group1.shopapi.repository.CollectionRepository;
+import com.vti.group1.shopapi.repository.OrderRepository;
 import com.vti.group1.shopapi.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,7 +22,9 @@ import java.util.Objects;
 public class StorageService {
     private final CollectionRepository collectionRepository;
     private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
     private final ProductMapper productMapper;
+    private final OrderMapper orderMapper;
 
     public List<Collection> getAllCollections() {
         return collectionRepository.findAll();
@@ -134,5 +139,17 @@ public class StorageService {
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Product not found"));
 
         return product.getCatalogs();
+    }
+
+    public List<OrderDto> getAllOrders() {
+        return orderRepository.findAll().stream().map(orderMapper::toDto).toList();
+    }
+
+    public OrderDto updateStatus(String uuid, OrderStatus status) {
+        Order order = orderRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        order.setStatus(status);
+        return orderMapper.toDto(orderRepository.save(order));
     }
 }

@@ -1,10 +1,8 @@
 package com.vti.group1.shopapi.controller;
 
+import com.vti.group1.shopapi.dto.OrderDto;
 import com.vti.group1.shopapi.dto.ProductDto;
-import com.vti.group1.shopapi.entity.Catalog;
-import com.vti.group1.shopapi.entity.Collection;
-import com.vti.group1.shopapi.entity.CollectionType;
-import com.vti.group1.shopapi.entity.Color;
+import com.vti.group1.shopapi.entity.*;
 import com.vti.group1.shopapi.service.StorageService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -82,5 +80,16 @@ public class StorageController {
     public ResponseEntity<List<Catalog>> getCatalogs(
             @PathVariable String uuid) {
         return ResponseEntity.ok(storageService.getCatalogs(uuid));
+    }
+
+    @GetMapping("/orders")
+    public ResponseEntity<List<OrderDto>> getAllOrders() {
+        return ResponseEntity.ok(storageService.getAllOrders());
+    }
+
+    @PutMapping("/orders/{uuid}")
+    public ResponseEntity<OrderDto> updateStatus(
+            @PathVariable String uuid, @RequestBody OrderStatus status) {
+        return ResponseEntity.ok(storageService.updateStatus(uuid, status));
     }
 }

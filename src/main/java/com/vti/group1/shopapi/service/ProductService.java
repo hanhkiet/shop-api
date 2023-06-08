@@ -20,10 +20,8 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     public Product findByUuid(String uuid) {
-        Product product = productRepository.findByUuid(uuid)
+        return productRepository.findByUuid(uuid)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Product not found"));
-
-        return product;
     }
 
     public List<Product> getAllProducts(Integer page) {
@@ -33,20 +31,16 @@ public class ProductService {
     public SearchPreviewDto searchPreviewProducts(String query) {
         Page<Product> products = productRepository.searchProducts(query, PageRequest.of(0, 4));
 
-        return SearchPreviewDto.builder()
-                .products(products.toList())
-                .totalElements(products.getTotalElements())
-                .build();
+        return SearchPreviewDto.builder().products(products.toList())
+                .totalElements(products.getTotalElements()).build();
     }
 
     public SearchResult searchAllProducts(String query, Integer page) {
         Page<Product> products = productRepository.searchProducts(query, PageRequest.of(page,
                                                                                         PAGE_SIZE));
 
-        return SearchResult.builder()
-                .products(products.toList())
-                .totalPages(products.getTotalPages())
-                .totalElements(products.getTotalElements())
+        return SearchResult.builder().products(products.toList())
+                .totalPages(products.getTotalPages()).totalElements(products.getTotalElements())
                 .build();
     }
 }
