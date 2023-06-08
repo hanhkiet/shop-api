@@ -25,9 +25,13 @@ public class OrderController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<OrderDto> getOrder(
-            @AuthenticationPrincipal String name, @PathVariable String uuid) {
+    public ResponseEntity<OrderDto> getOrder(@PathVariable String uuid) {
         return ResponseEntity.ok(orderService.getOrder(uuid));
+    }
+
+    @PutMapping("/{uuid}")
+    public ResponseEntity<OrderDto> cancelOrder(@PathVariable String uuid) {
+        return ResponseEntity.ok(orderService.cancelOrder(uuid));
     }
 
     @PostMapping("/checkout")

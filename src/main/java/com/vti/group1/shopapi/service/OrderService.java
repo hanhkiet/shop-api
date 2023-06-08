@@ -90,4 +90,28 @@ public class OrderService {
 
         return orderMapper.toDto(order);
     }
+
+    public OrderDto cancelOrder(String uuid) {
+        var order = orderRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        if (order.getStatus() != OrderStatus.PENDING)
+            throw new RestException(HttpStatus.BAD_REQUEST, "Order is not pending");
+
+        order.setStatus(OrderStatus.CANCELLED);
+        orderRepository.saveAndFlush(order);
+        rollbackCatalogQuantity(order);
+
+        return orderMapper.toDto(order);
+    }
+
+    private void rollbackCatalogQuantity(Order order) {
+        order.getDetails().forEach(detail -> {
+            var product = detail.getProduct();
+            product.getCatalogs().stream().filter(catalog -> catalog.getSize()
+                    .equals(detail.getSize())).findFirst().ifPresent(catalog -> {
+                catalog.setQuantity(catalog.getQuantity() + detail.getQuantity());
+            });
+        });
+    }
 }
