@@ -14,5 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class SearchResult {
     List<Product> products;
+    Long totalElements;
     Integer totalPages;
 }

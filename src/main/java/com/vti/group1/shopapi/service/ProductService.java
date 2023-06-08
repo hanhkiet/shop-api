@@ -46,6 +46,7 @@ public class ProductService {
         return SearchResult.builder()
                 .products(products.toList())
                 .totalPages(products.getTotalPages())
+                .totalElements(products.getTotalElements())
                 .build();
     }
 }
