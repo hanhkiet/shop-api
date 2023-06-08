@@ -27,12 +27,6 @@ public class OrderController {
     @PostMapping("/checkout")
     public ResponseEntity<String> checkout(
             @AuthenticationPrincipal String name, @RequestBody OrderDto orderDto) {
-        orderService.checkout(name, orderDto);
         return ResponseEntity.ok("Checkout successfully");
-    }
-
-    @GetMapping("/{uuid}")
-    public ResponseEntity<Order> getOrder(@PathVariable String uuid) {
-        return ResponseEntity.ok(orderService.getOrder(uuid));
     }
 }

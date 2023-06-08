@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
 import java.util.List;
 
 @Data
@@ -29,14 +30,15 @@ public class Order {
     @JsonIgnore
     private Customer customer;
 
-    @ManyToMany
-    @JoinTable(name = "order_catalog", joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "catalog_id"))
-    private List<Catalog> catalogs;
+    @OneToMany
+    @JoinColumn(name = "order_detail_id")
+    private List<OrderDetail> details;
 
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
 
     @Enumerated(EnumType.STRING)
     private OrderPaymentMethod paymentMethod;
+
+    private Date createdAt;
 }
