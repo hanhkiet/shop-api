@@ -1,9 +1,6 @@
 package com.vti.group1.shopapi.dto;
 
-import com.vti.group1.shopapi.entity.OrderAddress;
-import com.vti.group1.shopapi.entity.OrderDetail;
-import com.vti.group1.shopapi.entity.OrderPaymentMethod;
-import com.vti.group1.shopapi.entity.OrderStatus;
+import com.vti.group1.shopapi.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +16,6 @@ import java.util.List;
 public class OrderDto {
     private String uuid;
     private OrderAddress address;
-    private List<OrderDetail> details;
     private OrderStatus status;
     private OrderPaymentMethod paymentMethod;
     private Date createdAt;

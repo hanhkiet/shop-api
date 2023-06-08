@@ -14,8 +14,7 @@ public class OrderMapperImpl implements OrderMapper {
                 detail.getQuantity()).sum();
 
         return OrderDto.builder().uuid(order.getUuid()).address(order.getAddress())
-                .details(order.getDetails()).status(order.getStatus())
-                .totalPrice(totalPrice)
+                .status(order.getStatus()).totalPrice(totalPrice)
                 .paymentMethod(order.getPaymentMethod()).createdAt(order.getCreatedAt()).build();
     }
 }

@@ -31,7 +31,8 @@ public class Order {
     private Customer customer;
 
     @OneToMany
-    @JoinColumn(name = "order_detail_id")
+    @JoinColumn(name = "order_uuid")
+    @JsonIgnore
     private List<OrderDetail> details;
 
     @Enumerated(EnumType.STRING)

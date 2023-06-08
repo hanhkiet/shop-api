@@ -2,6 +2,8 @@ package com.vti.group1.shopapi.controller;
 
 import com.vti.group1.shopapi.dto.CheckoutDto;
 import com.vti.group1.shopapi.dto.OrderDto;
+import com.vti.group1.shopapi.entity.Order;
+import com.vti.group1.shopapi.entity.OrderDetail;
 import com.vti.group1.shopapi.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +27,8 @@ public class OrderController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<OrderDto> getOrder(@PathVariable String uuid) {
-        return ResponseEntity.ok(orderService.getOrder(uuid));
+    public ResponseEntity<List<OrderDetail>> getOrderDetails(@PathVariable String uuid) {
+        return ResponseEntity.ok(orderService.getOrderDetails(uuid));
     }
 
     @PutMapping("/{uuid}")
@@ -35,10 +37,8 @@ public class OrderController {
     }
 
     @PostMapping("/checkout")
-    public ResponseEntity<String> checkout(
+    public ResponseEntity<Order> checkout(
             @AuthenticationPrincipal String name, @RequestBody CheckoutDto checkoutDto) {
-        orderService.checkout(name, checkoutDto);
-        return ResponseEntity.ok("Checkout successfully");
+        return ResponseEntity.ok(orderService.checkout(name, checkoutDto));
     }
-
 }

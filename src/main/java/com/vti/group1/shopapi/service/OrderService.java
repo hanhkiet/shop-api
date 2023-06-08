@@ -34,7 +34,7 @@ public class OrderService {
         return customer.getOrders().stream().map(orderMapper::toDto).toList();
     }
 
-    public void checkout(String name, CheckoutDto checkoutDto) {
+    public Order checkout(String name, CheckoutDto checkoutDto) {
         var customer = customerAccountService.findCustomerByUsername(name);
 
         OrderAddress address = checkoutDto.getAddress();
@@ -62,14 +62,14 @@ public class OrderService {
 
             var detail = OrderDetail.builder().product(product).size(item.getSize())
                     .quantity(item.getQuantity()).build();
-            return orderDetailRepository.saveAndFlush(detail);
-        }).collect(Collectors.toList());
+            return orderDetailRepository.save(detail);
+        }).toList();
 
         var order = Order.builder().customer(customer).address(address).details(details)
                 .paymentMethod(OrderPaymentMethod.COD).status(OrderStatus.PENDING)
                 .createdAt(new Date()).build();
 
-        orderRepository.saveAndFlush(order);
+        return orderRepository.saveAndFlush(order);
     }
 
     private boolean isCatalogAvailable(Product product, CheckoutItemDto item) {
@@ -82,13 +82,6 @@ public class OrderService {
                 .findFirst().ifPresent(catalog -> {
                     catalog.setQuantity(catalog.getQuantity() - item.getQuantity());
                 });
-    }
-
-    public OrderDto getOrder(String uuid) {
-        var order = orderRepository.findByUuid(uuid)
-                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Order not found"));
-
-        return orderMapper.toDto(order);
     }
 
     public OrderDto cancelOrder(String uuid) {
@@ -113,5 +106,12 @@ public class OrderService {
                 catalog.setQuantity(catalog.getQuantity() + detail.getQuantity());
             });
         });
+    }
+
+    public List<OrderDetail> getOrderDetails(String uuid) {
+        var order = orderRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        return order.getDetails();
     }
 }

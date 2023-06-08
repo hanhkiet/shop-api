@@ -152,4 +152,11 @@ public class StorageService {
         order.setStatus(status);
         return orderMapper.toDto(orderRepository.save(order));
     }
+
+    public List<OrderDetail> getOrderDetails(String uuid) {
+        Order order = orderRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        return order.getDetails();
+    }
 }

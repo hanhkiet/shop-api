@@ -87,6 +87,12 @@ public class StorageController {
         return ResponseEntity.ok(storageService.getAllOrders());
     }
 
+    @GetMapping("/orders/{uuid}")
+    public ResponseEntity<List<OrderDetail>> getOrderDetails(
+            @PathVariable String uuid) {
+        return ResponseEntity.ok(storageService.getOrderDetails(uuid));
+    }
+
     @PutMapping("/orders/{uuid}")
     public ResponseEntity<OrderDto> updateStatus(
             @PathVariable String uuid, @RequestBody OrderStatus status) {
