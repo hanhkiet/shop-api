@@ -8,24 +8,21 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Entity
-@Table(name = "catalogs")
-public class Catalog {
+@Table(name="order_details")
+public class OrderDetail {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @JsonIgnore
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_uuid")
-    @JsonIgnore
     private Product product;
 
-    @Enumerated(EnumType.STRING)
     private Size size;
-
     private Integer quantity;
 }

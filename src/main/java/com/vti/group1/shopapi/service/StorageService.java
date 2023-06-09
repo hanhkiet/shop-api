@@ -1,31 +1,33 @@
 package com.vti.group1.shopapi.service;
 
-import java.util.List;
-import java.util.Objects;
-
-import com.vti.group1.shopapi.entity.Color;
-import com.vti.group1.shopapi.repository.CatalogRepository;
+import com.vti.group1.shopapi.dto.OrderDetailDto;
+import com.vti.group1.shopapi.dto.OrderDto;
+import com.vti.group1.shopapi.dto.ProductDto;
+import com.vti.group1.shopapi.entity.*;
+import com.vti.group1.shopapi.exception.RestException;
+import com.vti.group1.shopapi.mapper.OrderDetailMapper;
+import com.vti.group1.shopapi.mapper.OrderMapper;
+import com.vti.group1.shopapi.mapper.ProductMapper;
+import com.vti.group1.shopapi.repository.CollectionRepository;
+import com.vti.group1.shopapi.repository.OrderRepository;
+import com.vti.group1.shopapi.repository.ProductRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.vti.group1.shopapi.dto.ProductDto;
-import com.vti.group1.shopapi.entity.Collection;
-import com.vti.group1.shopapi.entity.CollectionType;
-import com.vti.group1.shopapi.entity.Product;
-import com.vti.group1.shopapi.exception.RestException;
-import com.vti.group1.shopapi.mapper.ProductMapper;
-import com.vti.group1.shopapi.repository.CollectionRepository;
-import com.vti.group1.shopapi.repository.ProductRepository;
-
-import lombok.RequiredArgsConstructor;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class StorageService {
     private final CollectionRepository collectionRepository;
     private final ProductRepository productRepository;
-    private final CatalogRepository catalogRepository;
+    private final OrderRepository orderRepository;
     private final ProductMapper productMapper;
+    private final OrderMapper orderMapper;
+    private final OrderDetailMapper orderDetailMapper;
 
     public List<Collection> getAllCollections() {
         return collectionRepository.findAll();
@@ -109,5 +111,55 @@ public class StorageService {
         product.setCollections(productDto.getCollections());
 
         return productMapper.toDto(productRepository.save(product));
+    }
+
+    public ProductDto addCatalog(String uuid, List<Catalog> catalogs) {
+        Product product = productRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Product not found"));
+
+        List<Catalog> productCatalogs = product.getCatalogs();
+        List<Catalog> newCatalogs = new LinkedList<>();
+
+        for (Catalog catalog : catalogs) {
+            Catalog productCatalog = productCatalogs.stream().filter(c -> c.getSize() ==
+                    catalog.getSize()).findFirst().orElse(null);
+
+            if (productCatalog != null) {
+                productCatalog.setQuantity(productCatalog.getQuantity() + catalog.getQuantity());
+            } else {
+                catalog.setProduct(product);
+                newCatalogs.add(catalog);
+            }
+        }
+
+        productCatalogs.addAll(newCatalogs);
+
+        return productMapper.toDto(productRepository.save(product));
+    }
+
+    public List<Catalog> getCatalogs(String uuid) {
+        Product product = productRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Product not found"));
+
+        return product.getCatalogs();
+    }
+
+    public List<OrderDto> getAllOrders() {
+        return orderRepository.findAll().stream().map(orderMapper::toDto).toList();
+    }
+
+    public OrderDto updateStatus(String uuid, OrderStatus status) {
+        Order order = orderRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        order.setStatus(status);
+        return orderMapper.toDto(orderRepository.save(order));
+    }
+
+    public List<OrderDetailDto> getOrderDetails(String uuid) {
+        Order order = orderRepository.findByUuid(uuid)
+                .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Order not found"));
+
+        return order.getDetails().stream().map(orderDetailMapper::toDto).toList();
     }
 }

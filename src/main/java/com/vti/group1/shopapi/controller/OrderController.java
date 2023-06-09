@@ -1,5 +1,7 @@
 package com.vti.group1.shopapi.controller;
 
+import com.vti.group1.shopapi.dto.CheckoutDto;
+import com.vti.group1.shopapi.dto.OrderDetailDto;
 import com.vti.group1.shopapi.dto.OrderDto;
 import com.vti.group1.shopapi.entity.Order;
 import com.vti.group1.shopapi.service.OrderService;
@@ -19,20 +21,25 @@ public class OrderController {
     private final OrderService orderService;
 
     @GetMapping
-    public ResponseEntity<List<Order>> getAllOrders(
+    public ResponseEntity<List<OrderDto>> getAllOrders(
             @AuthenticationPrincipal String name) {
         return ResponseEntity.ok(orderService.getAllOrders(name));
     }
 
-    @PostMapping("/checkout")
-    public ResponseEntity<String> checkout(
-            @AuthenticationPrincipal String name, @RequestBody OrderDto orderDto) {
-        orderService.checkout(name, orderDto);
-        return ResponseEntity.ok("Checkout successfully");
+    @GetMapping("/{uuid}")
+    public ResponseEntity<List<OrderDetailDto>> getOrderDetails(@PathVariable String uuid) {
+        return ResponseEntity.ok(orderService.getOrderDetails(uuid));
     }
 
-    @GetMapping("/{uuid}")
-    public ResponseEntity<Order> getOrder(@PathVariable String uuid) {
-        return ResponseEntity.ok(orderService.getOrder(uuid));
+    @PutMapping("/{uuid}/cancel")
+    public ResponseEntity<OrderDto> cancelOrder(@PathVariable String uuid) {
+        return ResponseEntity.ok(orderService.cancelOrder(uuid));
+
+    }
+
+    @PostMapping("/checkout")
+    public ResponseEntity<Order> checkout(
+            @AuthenticationPrincipal String name, @RequestBody CheckoutDto checkoutDto) {
+        return ResponseEntity.ok(orderService.checkout(name, checkoutDto));
     }
 }
