@@ -1,9 +1,9 @@
 package com.vti.group1.shopapi.controller;
 
 import com.vti.group1.shopapi.dto.CheckoutDto;
+import com.vti.group1.shopapi.dto.OrderDetailDto;
 import com.vti.group1.shopapi.dto.OrderDto;
 import com.vti.group1.shopapi.entity.Order;
-import com.vti.group1.shopapi.entity.OrderDetail;
 import com.vti.group1.shopapi.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,13 +27,14 @@ public class OrderController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<List<OrderDetail>> getOrderDetails(@PathVariable String uuid) {
+    public ResponseEntity<List<OrderDetailDto>> getOrderDetails(@PathVariable String uuid) {
         return ResponseEntity.ok(orderService.getOrderDetails(uuid));
     }
 
-    @PutMapping("/{uuid}")
+    @PutMapping("/{uuid}/cancel")
     public ResponseEntity<OrderDto> cancelOrder(@PathVariable String uuid) {
         return ResponseEntity.ok(orderService.cancelOrder(uuid));
+
     }
 
     @PostMapping("/checkout")

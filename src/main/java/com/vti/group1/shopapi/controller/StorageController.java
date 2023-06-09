@@ -94,9 +94,9 @@ public class StorageController {
         return ResponseEntity.ok(storageService.getOrderDetails(uuid));
     }
 
-    @PutMapping("/orders/{uuid}")
+    @PutMapping("/orders/{uuid}/{status}")
     public ResponseEntity<OrderDto> updateStatus(
-            @PathVariable String uuid, @RequestBody OrderStatus status) {
+            @PathVariable String uuid, @PathVariable OrderStatus status) {
         return ResponseEntity.ok(storageService.updateStatus(uuid, status));
     }
 }

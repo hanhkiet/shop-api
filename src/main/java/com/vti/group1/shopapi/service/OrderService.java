@@ -2,9 +2,11 @@ package com.vti.group1.shopapi.service;
 
 import com.vti.group1.shopapi.dto.CheckoutDto;
 import com.vti.group1.shopapi.dto.CheckoutItemDto;
+import com.vti.group1.shopapi.dto.OrderDetailDto;
 import com.vti.group1.shopapi.dto.OrderDto;
 import com.vti.group1.shopapi.entity.*;
 import com.vti.group1.shopapi.exception.RestException;
+import com.vti.group1.shopapi.mapper.OrderDetailMapper;
 import com.vti.group1.shopapi.mapper.OrderMapper;
 import com.vti.group1.shopapi.repository.OrderAddressRepository;
 import com.vti.group1.shopapi.repository.OrderDetailRepository;
@@ -27,6 +29,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final OrderMapper orderMapper;
+    private final OrderDetailMapper orderDetailMapper;
 
     public List<OrderDto> getAllOrders(String name) {
         var customer = customerAccountService.findCustomerByUsername(name);
@@ -108,10 +111,10 @@ public class OrderService {
         });
     }
 
-    public List<OrderDetail> getOrderDetails(String uuid) {
+    public List<OrderDetailDto> getOrderDetails(String uuid) {
         var order = orderRepository.findByUuid(uuid)
                 .orElseThrow(() -> new RestException(HttpStatus.NOT_FOUND, "Order not found"));
 
-        return order.getDetails();
+        return order.getDetails().stream().map(orderDetailMapper::toDto).toList();
     }
 }
